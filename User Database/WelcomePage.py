@@ -2,14 +2,17 @@ import tkinter as tk
 from tkinter import messagebox
 import database  # Import the database module
 
+db = database.database()
+db.startup()
 # Function to validate the login or add to the database
 # Function to validate login
 def login():
     username = username_entry.get()
     password = password_entry.get()
     
-    if database.login(username, password):
+    if db.login(username, password):
         messagebox.showinfo("Login Success", f"Welcome back, {username}!")
+        db.shutdown()
     else:
         messagebox.showerror("Login Failed", "Invalid username or password")
 
@@ -18,7 +21,7 @@ def sign_up():
     username = username_entry.get()
     password = password_entry.get()
     
-    add_result = database.signup(username, password)
+    add_result = db.signup(username, password)
     
     if add_result is True:
         messagebox.showinfo("Sign Up Success", f"User '{username}' added to the database.")
