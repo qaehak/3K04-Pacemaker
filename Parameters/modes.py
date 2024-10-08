@@ -1,3 +1,16 @@
+# Author: Fatima Sarfraz
+# Date: October 2024
+#
+# This class serves as the User Interface for the reviewing and modifying the Pacemaker modes and their respective parameters through a dropdown menu
+#
+# Function List:
+#        - __init__(self): Constructor + defining mode library which indicates what parameters are relevant for the respective mode
+#        - widgets(self,root): Created drop down menu to adjust parameters and submit button
+#        - update_parameters_for_mode(self, event=None): Updates parameters based on selected mode
+#        - get_values_for_param(self, param): provides value ranges for each parameter
+#        - submit_parameters(self): saves values to param.txt ---NEED TO FIX (not saving to file properly)---
+
+
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
