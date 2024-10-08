@@ -34,9 +34,10 @@
 #        - set_VRP(self, new_VRP): setter; sets VRP and saves to file
 #        - set_ARP(self, new_ARP): setter; sets ARP and saves to file
 #
+import os
 class param:
     #initialize member variables
-    file_name = "param.txt"
+    file_name = "param.txt" #os.path.join(os.path.dirname(__file__), "param.txt") (Needed this to run on my end - Fatima)
     state = ''
     LRL = '0'
     URL = '0'
