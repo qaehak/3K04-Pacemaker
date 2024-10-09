@@ -37,8 +37,7 @@
 import os
 class param:
     #initialize member variables
-    file_name = os.path.join(os.path.dirname(__file__), "param.txt") 
-    #"param.txt" #os.path.join(os.path.dirname(__file__), "param.txt") (Needed this to run on my end - Fatima)
+    file_name = "param.txt"  #os.path.join(os.path.dirname(__file__), "param.txt") (Needed this to run on my end - Fatima)
     state = ''
     LRL = '0'
     URL = '0'
