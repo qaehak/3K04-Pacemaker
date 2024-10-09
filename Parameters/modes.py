@@ -87,7 +87,6 @@ class Modes:
         else:
             #empty list for unknown params
             return []  
-            
     def submit_parameters(self):
         #save the parameters
         try:
