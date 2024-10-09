@@ -19,7 +19,8 @@ from param import param
 class Modes:
 
     def __init__(self, root, pacemaker_params):
-        self.pacemaker_params = pacemaker_params
+        self.pacemaker_params = pacemaker_params 
+
 
         #stores relevant parameters for each mode
         self.mode_params = {
@@ -30,7 +31,7 @@ class Modes:
         }
 
         #current selected mode (default=AOO)
-        self.selected_mode = tk.StringVar(value="AOO")
+        self.selected_mode = tk.StringVar(value=pacemaker_params.get_state().strip())
 
         #widget creation
         self.widgets(root)
@@ -57,19 +58,17 @@ class Modes:
     def update_parameters_for_mode(self, event=None):
         #update parameter options based on selected mode
         for widget in self.param_frame.winfo_children():
-            #get ride of current widgets (to accomodate new ones)
+            #get rid of current widgets (to accomodate new ones)
             widget.destroy()  
 
-        mode = self.selected_mode.get()
-        parameters = self.mode_params[mode]
+        mode = pacemaker_params.get_state().strip() 
+        parameters = self.mode_params.get(mode, [])
 
         #create dropdowns for parameters in selected mode
         for i, param in enumerate(parameters):
             tk.Label(self.param_frame, text=f"{param}:").grid(row=i, column=0, padx=10, pady=5)
             combo = ttk.Combobox(self.param_frame, values=self.get_values_for_param(param))
             combo.grid(row=i, column=1)
-            current_value = getattr(self.pacemaker_params, f"get_{param.replace(' ', '')}")().strip()
-            combo.set(current_value)
             setattr(self, f"{param.replace(' ', '').lower()}_combo", combo)
 
     def get_values_for_param(self, param):
@@ -87,21 +86,51 @@ class Modes:
         else:
             #empty list for unknown params
             return []  
+        
     def submit_parameters(self):
-        #save the parameters
+        #get and set the values from dropdowns using param class 
         try:
-            mode = self.selected_mode.get()
-            parameters = self.mode_params[mode]
-            with open("param.txt", "w") as file:
-                file.write(f"Mode: {mode}\n")
-            #get and set the values from dropdowns using param class 
-            for param in parameters:
-                combo_value = getattr(self, f"{param.replace(' ', '').lower()}_combo").get()
-                setter_method = getattr(self.pacemaker_params, f"set_{param.replace(' ', '')}")
-                setter_method(combo_value)
+            mode = self.selected_mode.get().strip() #self.selected_mode.get()
+            print(f"Selected mode: '{mode}'") #debugging
+            parameters = self.mode_params.get(mode, []) #retrieves parameters specific to selected mode
+   
+            pacemaker_params.set_state(mode) #write new mode into the param
+            if not parameters:
+                print(f"No parameters found for mode: {mode}")  #debugging
 
-            file.write(f"{param}: {combo_value}\n")
+            
+            for param in parameters:
+
+                combo_value = getattr(self, f"{param.replace(' ', '').lower()}_combo").get()
+                print(f"Setting {param} to {combo_value}")  #debugging
+
+                if param == "Lower Rate Limit":
+                    pacemaker_params.set_LowerRateLimit(combo_value)
+
+                elif param == "Upper Rate Limit":
+                    pacemaker_params.set_UpperRateLimit(combo_value)
+
+                elif param == "Atrial Amplitude":
+                    pacemaker_params.set_AtrialAmplitude(combo_value)
+
+                elif param == "Atrial Pulse Width":
+                    pacemaker_params.set_AtrialPulseWidth(combo_value)
+
+                elif param == "Ventricular Amplitude":
+                    pacemaker_params.set_VentricularAmplitude(combo_value)
+
+                elif param == "Ventricular Pulse Width":
+                    pacemaker_params.set_VentricularPulseWidth(combo_value)
+
+                elif param == "VRP":
+                    pacemaker_params.set_VRP(combo_value)
+
+                elif param == "ARP":
+                    pacemaker_params.set_ARP(combo_value)
+
             messagebox.showinfo(f"Parameters for {mode} mode have been updated")
+        except KeyError as e:
+            messagebox.showerror("Error", f"Invalid mode selected: {str(e)}") 
         except ValueError as e:
             #handle invalid input
             messagebox.showerror("Error", str(e))

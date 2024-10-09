@@ -37,7 +37,8 @@
 import os
 class param:
     #initialize member variables
-    file_name = "param.txt" #os.path.join(os.path.dirname(__file__), "param.txt") (Needed this to run on my end - Fatima)
+    file_name = os.path.join(os.path.dirname(__file__), "param.txt") 
+    #"param.txt" #os.path.join(os.path.dirname(__file__), "param.txt") (Needed this to run on my end - Fatima)
     state = ''
     LRL = '0'
     URL = '0'
@@ -113,10 +114,10 @@ class param:
     def get_AtrialPulseWidth(self):
         return self.APW
     
-    def get_VentricalAmplitude(self):
+    def get_VentricularAmplitude(self):
         return self.VA
     
-    def get_VentricalPulseWidth(self):
+    def get_VentricularPulseWidth(self):
         return self.VPW
     
     def get_VRP(self):
@@ -147,11 +148,11 @@ class param:
         self.APW = new_APW
         self.save_param()
     
-    def set_VentricalAmplitude(self, new_VA):
+    def set_VentricularAmplitude(self, new_VA):
         self.VA = new_VA
         self.save_param()
     
-    def set_VentricalPulseWidth(self, new_VPW):
+    def set_VentricularPulseWidth(self, new_VPW):
         self.VPW = new_VPW
         self.save_param()
     
