@@ -37,7 +37,7 @@
 import os
 class param:
     #initialize member variables
-    file_name = "param.txt"  #os.path.join(os.path.dirname(__file__), "param.txt") (Needed this to run on my end - Fatima)
+    file_name =os.path.join(os.path.dirname(__file__), "param.txt") #"param.txt"  #os.path.join(os.path.dirname(__file__), "param.txt") (Needed this to run on my end - Fatima)
     state = ''
     LRL = '0'
     URL = '0'
@@ -47,6 +47,7 @@ class param:
     VPW = '0'
     VRP = '0'
     ARP = '0'
+    
         
     def __init__(self):
         #load current values from the file
@@ -128,39 +129,47 @@ class param:
     #-----------------setters-----------------------
     #save data to member variables and local file
     def set_state(self, new_state):
-        self.state = new_state
-        self.save_param()
+        if new_state != self.state:
+            self.state = new_state
+            #self.save_param()
     
     def set_LowerRateLimit(self, new_LRL):
-        self.LRL = new_LRL
-        self.save_param()
+        if new_LRL != self.LRL:
+            self.LRL = new_LRL
+            #self.save_param()
     
     def set_UpperRateLimit(self, new_URL):
-        self.URL = new_URL
-        self.save_param()
+        if new_URL != self.URL:
+            self.URL = new_URL
+            #self.save_param()
     
     def set_AtrialAmplitude(self, new_AA):
-        self.AA = new_AA
-        self.save_param()
+        if new_AA != self.AA:
+            self.AA = new_AA
+            #self.save_param()
     
     def set_AtrialPulseWidth(self, new_APW):
-        self.APW = new_APW
-        self.save_param()
+        if new_APW != self.APW:
+            self.APW = new_APW
+            #self.save_param()
     
     def set_VentricularAmplitude(self, new_VA):
-        self.VA = new_VA
-        self.save_param()
+        if new_VA != self.VA:
+            self.VA = new_VA
+            #self.save_param()
     
     def set_VentricularPulseWidth(self, new_VPW):
-        self.VPW = new_VPW
-        self.save_param()
+        if new_VPW != self.VPW:
+            self.VPW = new_VPW
+            #self.save_param()
     
     def set_VRP(self, new_VRP):
-        self.VRP = new_VRP
-        self.save_param()
+        if new_VRP != self.VRP:
+            self.VRP = new_VRP
+            #self.save_param()
         
     def set_ARP(self, new_ARP):
-        self.ARP = new_ARP
-        self.save_param()
-    
-    
+        if new_ARP != self.ARP:
+            self.ARP = new_ARP
+            #self.save_param()
+        

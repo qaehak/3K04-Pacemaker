@@ -12,7 +12,7 @@
 
 
 import tkinter as tk
-from tkinter import messagebox
+import tkinter.messagebox as messagebox
 from tkinter import ttk
 from param import param
 
@@ -35,6 +35,9 @@ class Modes:
 
         #widget creation
         self.widgets(root)
+
+        self.message_label = tk.Label(root, text="", fg="green")
+        self.message_label.grid(row=11, columnspan=2)
     
     def widgets(self,root):
         root.title("Pacemaker Parameters")
@@ -61,7 +64,7 @@ class Modes:
             #get rid of current widgets (to accomodate new ones)
             widget.destroy()  
 
-        mode = pacemaker_params.get_state().strip() 
+        mode = self.selected_mode.get().strip()
         parameters = self.mode_params.get(mode, [])
 
         #create dropdowns for parameters in selected mode
@@ -70,6 +73,30 @@ class Modes:
             combo = ttk.Combobox(self.param_frame, values=self.get_values_for_param(param))
             combo.grid(row=i, column=1)
             setattr(self, f"{param.replace(' ', '').lower()}_combo", combo)
+
+            if param == "Lower Rate Limit":
+                combo.set(self.pacemaker_params.get_LowerRateLimit())
+            elif param == "Upper Rate Limit":
+                combo.set(self.pacemaker_params.get_UpperRateLimit())
+            elif param == "Atrial Amplitude":
+                combo.set(self.pacemaker_params.get_AtrialAmplitude())
+            elif param == "Atrial Pulse Width":
+                combo.set(self.pacemaker_params.get_AtrialPulseWidth())
+            elif param == "Ventricular Amplitude":
+                combo.set(self.pacemaker_params.get_VentricularAmplitude())
+            elif param == "Ventricular Pulse Width":
+                combo.set(self.pacemaker_params.get_VentricularPulseWidth())
+            elif param == "VRP":
+                combo.set(self.pacemaker_params.get_VRP())
+            elif param == "ARP":
+                combo.set(self.pacemaker_params.get_ARP())
+
+
+    def reset_parameters(self):
+        #clear previous parameter values from the file
+        for param in ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width", 
+                  "Ventricular Amplitude", "Ventricular Pulse Width", "VRP", "ARP"]:
+            getattr(self.pacemaker_params, f'set_{param.replace(" ", "")}')("")
 
     def get_values_for_param(self, param):
         #options for parameters
@@ -90,50 +117,59 @@ class Modes:
     def submit_parameters(self):
         #get and set the values from dropdowns using param class 
         try:
+            self.reset_parameters()
             mode = self.selected_mode.get().strip() #self.selected_mode.get()
             print(f"Selected mode: '{mode}'") #debugging
             parameters = self.mode_params.get(mode, []) #retrieves parameters specific to selected mode
-   
+            #self.reset_parameters()
             pacemaker_params.set_state(mode) #write new mode into the param
+
             if not parameters:
-                print(f"No parameters found for mode: {mode}")  #debugging
+                for param in ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width", 
+                  "Ventricular Amplitude", "Ventricular Pulse Width", "VRP", "ARP"]:
+                    getattr(pacemaker_params, f'set_{param}')( "" )
+                self.message_label.config(text=f"Parameters for {mode} mode have been updated.")  
+                return
 
             
             for param in parameters:
+                combo_name = f"{param.replace(' ', '').lower()}_combo"
+                if hasattr(self, combo_name):
+                    combo_value = combo_value = getattr(self, combo_name).get()
+                    print(f"Setting {param} to {combo_value}")  #debugging
 
-                combo_value = getattr(self, f"{param.replace(' ', '').lower()}_combo").get()
-                print(f"Setting {param} to {combo_value}")  #debugging
+                    if param == "Lower Rate Limit":  
+                        pacemaker_params.set_LowerRateLimit(combo_value)
 
-                if param == "Lower Rate Limit":
-                    pacemaker_params.set_LowerRateLimit(combo_value)
+                    elif param == "Upper Rate Limit":
+                        pacemaker_params.set_UpperRateLimit(combo_value)
 
-                elif param == "Upper Rate Limit":
-                    pacemaker_params.set_UpperRateLimit(combo_value)
+                    elif param == "Atrial Amplitude":
+                        pacemaker_params.set_AtrialAmplitude(combo_value)
 
-                elif param == "Atrial Amplitude":
-                    pacemaker_params.set_AtrialAmplitude(combo_value)
+                    elif param == "Atrial Pulse Width":
+                        pacemaker_params.set_AtrialPulseWidth(combo_value)
 
-                elif param == "Atrial Pulse Width":
-                    pacemaker_params.set_AtrialPulseWidth(combo_value)
+                    elif param == "Ventricular Amplitude":
+                        pacemaker_params.set_VentricularAmplitude(combo_value)
 
-                elif param == "Ventricular Amplitude":
-                    pacemaker_params.set_VentricularAmplitude(combo_value)
+                    elif param == "Ventricular Pulse Width":
+                        pacemaker_params.set_VentricularPulseWidth(combo_value)
 
-                elif param == "Ventricular Pulse Width":
-                    pacemaker_params.set_VentricularPulseWidth(combo_value)
+                    elif param == "VRP":
+                        pacemaker_params.set_VRP(combo_value)
 
-                elif param == "VRP":
-                    pacemaker_params.set_VRP(combo_value)
+                    elif param == "ARP":
+                        pacemaker_params.set_ARP(combo_value)
+                
+            pacemaker_params.save_param()
+            self.message_label.config(text=f"Parameters for {mode} mode have been updated.") 
 
-                elif param == "ARP":
-                    pacemaker_params.set_ARP(combo_value)
-
-            messagebox.showinfo(f"Parameters for {mode} mode have been updated")
         except KeyError as e:
-            messagebox.showerror("Error", f"Invalid mode selected: {str(e)}") 
+            self.message_label.config(text=f"Invalid mode selected: {str(e)}", fg="red")
         except ValueError as e:
             #handle invalid input
-            messagebox.showerror("Error", str(e))
+            self.message_label.config(text=str(e), fg="red")
 
 if __name__ == "__main__":
     #create the main window
