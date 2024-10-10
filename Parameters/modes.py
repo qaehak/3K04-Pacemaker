@@ -115,14 +115,15 @@ class Modes:
             return []  
         
     def submit_parameters(self):
+
+
         #get and set the values from dropdowns using param class 
         try:
-            self.reset_parameters()
             mode = self.selected_mode.get().strip() #self.selected_mode.get()
             print(f"Selected mode: '{mode}'") #debugging
             parameters = self.mode_params.get(mode, []) #retrieves parameters specific to selected mode
-            #self.reset_parameters()
             pacemaker_params.set_state(mode) #write new mode into the param
+            
 
             if not parameters:
                 for param in ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width", 
@@ -131,14 +132,15 @@ class Modes:
                 self.message_label.config(text=f"Parameters for {mode} mode have been updated.")  
                 return
 
-            
+            #saves parameters for those relevant to the selected mode (stored in parameters)
             for param in parameters:
                 combo_name = f"{param.replace(' ', '').lower()}_combo"
                 if hasattr(self, combo_name):
                     combo_value = combo_value = getattr(self, combo_name).get()
                     print(f"Setting {param} to {combo_value}")  #debugging
 
-                    if param == "Lower Rate Limit":  
+                    
+                    if param == "Lower Rate Limit":
                         pacemaker_params.set_LowerRateLimit(combo_value)
 
                     elif param == "Upper Rate Limit":
@@ -161,8 +163,8 @@ class Modes:
 
                     elif param == "ARP":
                         pacemaker_params.set_ARP(combo_value)
-                
-            pacemaker_params.save_param()
+                     
+                    
             self.message_label.config(text=f"Parameters for {mode} mode have been updated.") 
 
         except KeyError as e:

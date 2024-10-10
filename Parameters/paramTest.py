@@ -26,6 +26,7 @@ parameters.set_VentricularAmplitude(16)
 parameters.set_VentricularPulseWidth(15)
 parameters.set_VRP(14)
 parameters.set_ARP(13)
+#parameters.save_param()
 
 #Print out current values
 print("--------AFTER CHANGES------------")
@@ -49,3 +50,4 @@ parameters.set_VentricularAmplitude(5)
 parameters.set_VentricularPulseWidth(6)
 parameters.set_VRP(7)
 parameters.set_ARP(8)
+#parameters.save_param()

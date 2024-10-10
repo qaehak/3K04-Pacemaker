@@ -11,7 +11,7 @@
 #
 # Function List:
 #        - __init__(self): Constructor
-#        - save_param(self): Saves current parameters to local file
+#        - save_param(self, param, line): Saves a new parameter to local file using line as index
 #        - load_param(self): Loads parameters from local file to member variables
 
 #        - get_state(self): getter; returns state
@@ -34,7 +34,6 @@
 #        - set_VRP(self, new_VRP): setter; sets VRP and saves to file
 #        - set_ARP(self, new_ARP): setter; sets ARP and saves to file
 #
-import os
 class param:
     #initialize member variables
     file_name = "param.txt"  #"param.txt"  #os.path.join(os.path.dirname(__file__), "param.txt") (Needed this to run on my end - Fatima)
@@ -53,48 +52,35 @@ class param:
         #load current values from the file
         self.load_param()
         
-    
-    def save_param(self):
-        #open text file in writing mode
-        f = open(self.file_name, "w")
-        f.write(self.state)
-        f.write("\n")
-        f.write(str(self.LRL))
-        f.write("\n")
-        f.write(str(self.URL))
-        f.write("\n")
-        f.write(str(self.AA))
-        f.write("\n")
-        f.write(str(self.APW))
-        f.write("\n")
-        f.write(str(self.VA))
-        f.write("\n")
-        f.write(str(self.VPW))
-        f.write("\n")
-        f.write(str(self.VRP))
-        f.write("\n")
-        f.write(str(self.ARP))
-        f.write("\n")
         
-        f.close()
+    def save_param(self, param, line):
+        #create file object and read all lines
+        with open(self.file_name) as f:
+            lines = f.readlines()
+            
+        #overwrite new param to relevant line
+        lines[line-1] = str(param).strip() + "\n"
+        
+        #save edits to file
+        with open(self.file_name, "w") as f:
+            for l in lines:
+                f.write(l)
         
         
     def load_param(self):
-        #open text file in reading mode
-        f = open(self.file_name, "r")
+        #create text file in reading mode
+        with open(self.file_name, "r") as f:
+            #save each line to its respective variable
+            self.state = f.readline()
+            self.LRL = f.readline()
+            self.URL = f.readline()
+            self.AA = f.readline()
+            self.APW = f.readline()
+            self.VA = f.readline()
+            self.VPW = f.readline()
+            self.VRP = f.readline()
+            self.ARP = f.readline()
         
-        #save each line to its respective variable
-        self.state = f.readline()
-        self.LRL = f.readline()
-        self.URL = f.readline()
-        self.AA = f.readline()
-        self.APW = f.readline()
-        self.VA = f.readline()
-        self.VPW = f.readline()
-        self.VRP = f.readline()
-        self.ARP = f.readline()
-        
-        f.close()
         
         
     
@@ -129,47 +115,38 @@ class param:
     #-----------------setters-----------------------
     #save data to member variables and local file
     def set_state(self, new_state):
-        if new_state != self.state:
-            self.state = new_state
-            #self.save_param()
+        self.state = new_state
+        self.save_param(new_state, 1)
     
     def set_LowerRateLimit(self, new_LRL):
-        if new_LRL != self.LRL:
-            self.LRL = new_LRL
-            #self.save_param()
+        self.LRL = new_LRL
+        self.save_param(new_LRL, 2)
     
     def set_UpperRateLimit(self, new_URL):
-        if new_URL != self.URL:
-            self.URL = new_URL
-            #self.save_param()
+        self.URL = new_URL
+        self.save_param(new_URL, 3)
     
     def set_AtrialAmplitude(self, new_AA):
-        if new_AA != self.AA:
-            self.AA = new_AA
-            #self.save_param()
+        self.AA = new_AA
+        self.save_param(new_AA, 4)
     
     def set_AtrialPulseWidth(self, new_APW):
-        if new_APW != self.APW:
-            self.APW = new_APW
-            #self.save_param()
+        self.APW = new_APW
+        self.save_param(new_APW, 5)
     
     def set_VentricularAmplitude(self, new_VA):
-        if new_VA != self.VA:
-            self.VA = new_VA
-            #self.save_param()
+        self.VA = new_VA
+        self.save_param(new_VA, 6)
     
     def set_VentricularPulseWidth(self, new_VPW):
-        if new_VPW != self.VPW:
-            self.VPW = new_VPW
-            #self.save_param()
+        self.VPW = new_VPW
+        self.save_param(new_VPW, 7)
     
     def set_VRP(self, new_VRP):
-        if new_VRP != self.VRP:
-            self.VRP = new_VRP
-            #self.save_param()
+        self.VRP = new_VRP
+        self.save_param(new_VRP, 8)
         
     def set_ARP(self, new_ARP):
-        if new_ARP != self.ARP:
-            self.ARP = new_ARP
-            #self.save_param()
+        self.ARP = new_ARP
+        self.save_param(new_ARP, 9)
         
