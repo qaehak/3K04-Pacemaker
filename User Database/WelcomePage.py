@@ -4,7 +4,7 @@ import database  # Import the database module
 
 db = database.database()
 db.startup()
-# Function to validate the login or add to the database
+
 # Function to validate login
 def login():
     username = username_entry.get()
@@ -12,7 +12,8 @@ def login():
     
     if db.login(username, password):
         messagebox.showinfo("Login Success", f"Welcome back, {username}!")
-        db.shutdown()
+        open_home_page()  # Navigate to the home page after successful login
+        db.shutdown()  # Close the database connection
     else:
         messagebox.showerror("Login Failed", "Invalid username or password")
 
@@ -30,6 +31,26 @@ def sign_up():
     elif add_result is None:
         messagebox.showerror("Error", "Database is full. Cannot add more users.")
 
+# Function to open the home page
+def open_home_page():
+    # Destroy the login window
+    root.destroy()
+
+    # Create a new window for the home page
+    home_window = tk.Tk()
+    home_window.title("Home Page")
+    home_window.geometry("400x300")
+
+    # Create a label for the home page
+    home_label = tk.Label(home_window, text="Welcome to the Home Page!", font=("Arial", 16))
+    home_label.pack(pady=50)
+
+    # You can add more widgets here for folders, parameters, etc.
+    parameters_label = tk.Label(home_window, text="This is where your parameters/folders will go.", font=("Arial", 12))
+    parameters_label.pack(pady=20)
+
+    # Start the main loop for the home page
+    home_window.mainloop()
 
 # Create the main window
 root = tk.Tk()
