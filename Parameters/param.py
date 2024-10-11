@@ -23,7 +23,10 @@
 # Function List:
 #        - __init__(self): Constructor
 #        - save_param(self, param, line): Saves a new parameter to local file using line as index
-#        - load_param(self): Loads parameters from local file to member variables
+#        - load_param_VOO(self): Loads parameters from local file for VOO to member variables
+#        - load_param_VVI(self): Loads parameters from local file for VVI to member variables
+#        - load_param_AOO_AAI(self): Loads parameters from local file for AAO or AAI to member variables
+#        - get_file_Name(self): Helper function; Sets member variable file_name to the appropriate path based on state
 
 #        - get_state(self): getter; returns state
 #        - get_LowerRateLimit(self): getter; returns LRL
@@ -60,7 +63,7 @@ class param:
         self.VPW = '0'
         self.VRP = '0'
         self.ARP = '0'
-        self.load_param()
+        self.load_param_AOO_AAI()
         
         
     def save_param(self, param, line):
@@ -78,9 +81,9 @@ class param:
             for l in lines:
                 f.write(l)
                         
-    def load_param(self):
+                
+    def load_param_VOO(self):
         self.get_file_Name()
-        
         #create text file in reading mode
         with open(self.file_name, "r") as f:
             #save each line to its respective variable
@@ -89,33 +92,39 @@ class param:
             self.state = f.readline()
             self.LRL = f.readline()
             self.URL = f.readline()
+            self.VA = f.readline()
+            self.VPW = f.readline()
             
-            print(self.state)
-            if (self.state == "VOO"):
-                self.VA = f.readline()
-                self.VPW = f.readline()
-                print(self.VA)
-                print(self.VPW)
-                
-            elif (self.state == "VVI"):
-                self.VA = f.readline()
-                self.VPW = f.readline()
-                self.VRP = f.readline()
-                print(self.VA)
-                print(self.VPW)
-                print(self.VRP)
-                
-            elif (self.state == "AOO" or self.state == "AAI"): #AOO and AAI have same file format
-                self.AA = f.readline()
-                self.APW = f.readline()
-                self.ARP = f.readline()
-                print(self.AA)
-                print(self.APW)
-                print(self.ARP)
-       
-       
+    def load_param_VVI(self):
+        self.get_file_Name()
+        #create text file in reading mode
+        with open(self.file_name, "r") as f:
+            #save each line to its respective variable
+            
+            #Common to all file
+            self.state = f.readline()
+            self.LRL = f.readline()
+            self.URL = f.readline()
+            self.VA = f.readline()
+            self.VPW = f.readline()
+            self.VRP = f.readline()
+           
+    def load_param_AOO_AAI(self):
+        self.get_file_Name()
+        #create text file in reading mode
+        with open(self.file_name, "r") as f:
+            #save each line to its respective variable
+            
+            #Common to all file
+            self.state = f.readline()
+            self.LRL = f.readline()
+            self.URL = f.readline()
+            self.AA = f.readline()
+            self.APW = f.readline()
+            self.ARP = f.readline()
+            
+        
     def get_file_Name(self):
-        print(self.state)
         #check which file to open based on state
         if (self.state == "VOO"):
             self.file_name = "VOO.txt"  #"VOO.txt"  #os.path.join(os.path.dirname(__file__), "VOO.txt") (Needed this to run on my end - Fatima)
@@ -125,7 +134,6 @@ class param:
             self.file_name = "VVI.txt"  #"VVI.txt"  #os.path.join(os.path.dirname(__file__), "VVI.txt")
         elif (self.state == "AAI"):
             self.file_name = "AAI.txt"  #"AAI.txt"  #os.path.join(os.path.dirname(__file__), "AAI.txt")
-        print(self.file_name)
         
         
     
@@ -161,8 +169,18 @@ class param:
     #save data to member variables and local file
     def set_state(self, new_state):
         self.state = new_state
-        self.load_param() # only load paramaters for new state
         self.save_param(new_state, 1)
+        
+       # only load paramaters for new state
+        if (self.state == "VOO"):
+            self.load_param_VOO()
+                
+        elif (self.state == "VVI"):
+            self.load_param_VVI()
+                
+        elif (self.state == "AOO" or self.state == "AAI"): #AOO and AAI have same file format
+            self.load_param_AOO_AAI()
+                
     
     def set_LowerRateLimit(self, new_LRL):
         self.LRL = new_LRL

@@ -66,14 +66,15 @@ class Modes:
 
         mode = self.selected_mode.get().strip()
         parameters = self.mode_params.get(mode, [])
-
         #create dropdowns for parameters in selected mode
         for i, param in enumerate(parameters):
             tk.Label(self.param_frame, text=f"{param}:").grid(row=i, column=0, padx=10, pady=5)
             combo = ttk.Combobox(self.param_frame, values=self.get_values_for_param(param))
             combo.grid(row=i, column=1)
             setattr(self, f"{param.replace(' ', '').lower()}_combo", combo)
-
+        
+            self.pacemaker_params.set_state(mode)
+            
             if param == "Lower Rate Limit":
                 combo.set(self.pacemaker_params.get_LowerRateLimit())
             elif param == "Upper Rate Limit":
