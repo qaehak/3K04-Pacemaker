@@ -1,7 +1,18 @@
 # This program reads and saves relevant parameters for the pacemaker using a local file. The state of the pacemaker is also stored.
-# Text file formatting: Line 1 = pacemaker state, Line 2 = Lower Rate Limit (LRL), Line 3 = Upper Rate Limit (URL),
-#               Line 4 = Atrial Amplitude (AA), Line 5 = Atrial Pulse Width (APW), Line 6 = Ventricular Amplitude (VA),
-#               Line 7 = Ventricular Pulse Width (VPW), Line 8 = VRP, Line 9 = ARP
+# Text file formatting:
+# - VOO.txt
+#         Line 1 = VOO, Line 2 = Lower Rate Limit (LRL), Line 3 = Upper Rate Limit (URL),
+#         Line 4 = Ventricular Amplitude (VA), Line 5 = Ventricular Pulse Width (VPW)
+# - AOO.txt
+#         Line 1 = AOO, Line 2 = Lower Rate Limit (LRL), Line 3 = Upper Rate Limit (URL),
+#         Line 4 = Atrial Amplitude (AA), Line 5 = Atrial Pulse Width (APW), Line 6 = ARP
+# - AAI.txt
+#         Line 1 = AAI, Line 2 = Lower Rate Limit (LRL), Line 3 = Upper Rate Limit (URL),
+#         Line 4 = Atrial Amplitude (AA), Line 5 = Atrial Pulse Width (APW), Line 6 = ARP
+# - VVI.txt
+#         Line 1 = VVI, Line 2 = Lower Rate Limit (LRL), Line 3 = Upper Rate Limit (URL),
+#         Line 4 = Ventricular Amplitude (VA), Line 5 = Ventricular Pulse Width (VPW), Line 6 = ARP
+#
 # Extra Parameters possibly Atrial Sensitivity, PVARP, Hysteresis, Rate smoothing, Ventricular Sensitivity
 #               (Can be added upon request for next sprint)
 # Note that states can be either AOO, VOO, AAI,or VVI
@@ -34,27 +45,27 @@
 #        - set_VRP(self, new_VRP): setter; sets VRP and saves to file
 #        - set_ARP(self, new_ARP): setter; sets ARP and saves to file
 #
-
 class param:
-    #initialize member variables
-    file_name = "param.txt"  #os.path.join(os.path.dirname(__file__), "param.txt") (Needed this to run on my end - Fatima)
-    state = ''
-    LRL = '0'
-    URL = '0'
-    AA = '0'
-    APW = '0'
-    VA = '0'
-    VPW = '0'
-    VRP = '0'
-    ARP = '0'
     
         
     def __init__(self):
-        #load current values from the file
+        #initialize member variables
+        self.file_name = "AOO.txt"
+        self.state = 'AOO'
+        self.LRL = '0'
+        self.URL = '0'
+        self.AA = '0'
+        self.APW = '0'
+        self.VA = '0'
+        self.VPW = '0'
+        self.VRP = '0'
+        self.ARP = '0'
         self.load_param()
         
         
     def save_param(self, param, line):
+        self.get_file_Name()
+        
         #create file object and read all lines
         with open(self.file_name) as f:
             lines = f.readlines()
@@ -66,22 +77,55 @@ class param:
         with open(self.file_name, "w") as f:
             for l in lines:
                 f.write(l)
-        
-        
+                        
     def load_param(self):
+        self.get_file_Name()
+        
         #create text file in reading mode
         with open(self.file_name, "r") as f:
             #save each line to its respective variable
+            
+            #Common to all file
             self.state = f.readline()
             self.LRL = f.readline()
             self.URL = f.readline()
-            self.AA = f.readline()
-            self.APW = f.readline()
-            self.VA = f.readline()
-            self.VPW = f.readline()
-            self.VRP = f.readline()
-            self.ARP = f.readline()
-        
+            
+            print(self.state)
+            if (self.state == "VOO"):
+                self.VA = f.readline()
+                self.VPW = f.readline()
+                print(self.VA)
+                print(self.VPW)
+                
+            elif (self.state == "VVI"):
+                self.VA = f.readline()
+                self.VPW = f.readline()
+                self.VRP = f.readline()
+                print(self.VA)
+                print(self.VPW)
+                print(self.VRP)
+                
+            elif (self.state == "AOO" or self.state == "AAI"): #AOO and AAI have same file format
+                self.AA = f.readline()
+                self.APW = f.readline()
+                self.ARP = f.readline()
+                print(self.AA)
+                print(self.APW)
+                print(self.ARP)
+       
+       
+    def get_file_Name(self):
+        print(self.state)
+        #check which file to open based on state
+        if (self.state == "VOO"):
+            self.file_name = "VOO.txt"  #"VOO.txt"  #os.path.join(os.path.dirname(__file__), "VOO.txt") (Needed this to run on my end - Fatima)
+        elif (self.state == "AOO"):
+            self.file_name = "AOO.txt"  #"AOO.txt"  #os.path.join(os.path.dirname(__file__), "AOO.txt")
+        elif (self.state == "VVI"):
+            self.file_name = "VVI.txt"  #"VVI.txt"  #os.path.join(os.path.dirname(__file__), "VVI.txt")
+        elif (self.state == "AAI"):
+            self.file_name = "AAI.txt"  #"AAI.txt"  #os.path.join(os.path.dirname(__file__), "AAI.txt")
+        print(self.file_name)
         
         
     
@@ -117,6 +161,7 @@ class param:
     #save data to member variables and local file
     def set_state(self, new_state):
         self.state = new_state
+        self.load_param() # only load paramaters for new state
         self.save_param(new_state, 1)
     
     def set_LowerRateLimit(self, new_LRL):
@@ -137,17 +182,17 @@ class param:
     
     def set_VentricularAmplitude(self, new_VA):
         self.VA = new_VA
-        self.save_param(new_VA, 6)
+        self.save_param(new_VA, 4)
     
     def set_VentricularPulseWidth(self, new_VPW):
         self.VPW = new_VPW
-        self.save_param(new_VPW, 7)
+        self.save_param(new_VPW, 5)
     
     def set_VRP(self, new_VRP):
         self.VRP = new_VRP
-        self.save_param(new_VRP, 8)
+        self.save_param(new_VRP, 6)
         
     def set_ARP(self, new_ARP):
         self.ARP = new_ARP
-        self.save_param(new_ARP, 9)
+        self.save_param(new_ARP, 6)
         
