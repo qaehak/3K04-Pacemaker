@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
 import database  # Import the database module
+from modes import Modes  # Import the Modes class from modes.py
+from param import param  # Import the param class from param.py
+
 
 db = database.database()
 db.startup()
@@ -11,8 +14,9 @@ def login():
     password = password_entry.get()
     
     if db.login(username, password):
+        # Show a message box and open the Modes home page after it's closed
         messagebox.showinfo("Login Success", f"Welcome back, {username}!")
-        open_home_page()  # Navigate to the home page after successful login
+        root.after(0, open_home_page)  # Use after() to delay opening home page until message box is closed
         db.shutdown()  # Close the database connection
     else:
         messagebox.showerror("Login Failed", "Invalid username or password")
@@ -31,28 +35,25 @@ def sign_up():
     elif add_result is None:
         messagebox.showerror("Error", "Database is full. Cannot add more users.")
 
-# Function to open the home page
+# Function to open the home page (from modes.py)
 def open_home_page():
     # Destroy the login window
     root.destroy()
 
-    # Create a new window for the home page
+    # Create a new window for the home page (from modes.py)
     home_window = tk.Tk()
-    home_window.title("Home Page")
-    home_window.geometry("400x300")
+    home_window.title("Pacemaker Modes Home Page")
 
-    # Create a label for the home page
-    home_label = tk.Label(home_window, text="Welcome to the Home Page!", font=("Arial", 16))
-    home_label.pack(pady=50)
+    # Create an instance of the param class and pass it to Modes
+    pacemaker_params = param()  # Assuming the param class handles pacemaker parameters
 
-    # You can add more widgets here for folders, parameters, etc.
-    parameters_label = tk.Label(home_window, text="This is where your parameters/folders will go.", font=("Arial", 12))
-    parameters_label.pack(pady=20)
+    # Pass the new window and pacemaker parameters to the Modes class
+    app = Modes(home_window, pacemaker_params)
 
-    # Start the main loop for the home page
+    # Start the main loop for the home page (from modes.py)
     home_window.mainloop()
 
-# Create the main window
+# Create the main window for login
 root = tk.Tk()
 root.title("Login/Sign Up Screen")
 root.geometry("400x300")
