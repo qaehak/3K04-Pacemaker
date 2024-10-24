@@ -46,13 +46,20 @@ def open_home_page():
     home_window = tk.Tk()
     home_window.title("Pacemaker Modes Home Page")
     home_window.minsize(1500,1000)
-
+    
     # Create an instance of the param class and pass it to Modes
     pacemaker_params = param()  # Assuming the param class handles pacemaker parameters
    
     # Pass the new window and pacemaker parameters to the Modes class
     app = Modes(home_window, pacemaker_params)
+    
+    #place graph
+    egram = tk.PhotoImage(file="test_graph.png")
+    egram_label = tk.Label(home_window, image=egram)
+    egram_label.grid(row=1,column = 10)
+    
 
+    home_window.mainloop()
 
 # Create the main window for login
 root = tk.Tk()
