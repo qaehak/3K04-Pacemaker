@@ -48,13 +48,14 @@
 #        - set_VRP(self, new_VRP): setter; sets VRP and saves to file
 #        - set_ARP(self, new_ARP): setter; sets ARP and saves to file
 #
+import os
 class param:
     
         
     def __init__(self):
         #initialize member variables
-        self.file_name = "AOO.txt"
-        self.state = 'AOO'
+        self.file_name = os.path.join(os.path.dirname(__file__),"AOO.txt")
+        self.state = os.path.join(os.path.dirname(__file__),"AOO.txt")
         self.LRL = '0'
         self.URL = '0'
         self.AA = '0'
@@ -125,15 +126,15 @@ class param:
             
         
     def get_file_Name(self):
-        #check which file to open based on state
-        if (self.state == "VOO"):
-            self.file_name = "VOO.txt"  #"VOO.txt"  #os.path.join(os.path.dirname(__file__), "VOO.txt") (Needed this to run on my end - Fatima)
-        elif (self.state == "AOO"):
-            self.file_name = "AOO.txt"  #"AOO.txt"  #os.path.join(os.path.dirname(__file__), "AOO.txt")
-        elif (self.state == "VVI"):
-            self.file_name = "VVI.txt"  #"VVI.txt"  #os.path.join(os.path.dirname(__file__), "VVI.txt")
-        elif (self.state == "AAI"):
-            self.file_name = "AAI.txt"  #"AAI.txt"  #os.path.join(os.path.dirname(__file__), "AAI.txt")
+        #check which file to open based on state 
+        if (self.state == os.path.join(os.path.dirname(__file__),"VOO.txt")):
+            self.file_name = os.path.join(os.path.dirname(__file__),"VOO.txt")  #"VOO.txt"  #os.path.join(os.path.dirname(__file__), "VOO.txt") (Needed this to run on my end - Fatima)
+        elif (self.state == os.path.join(os.path.dirname(__file__),"AOO.txt")):
+            self.file_name = os.path.join(os.path.dirname(__file__),"AOO.txt")  #"AOO.txt"  #os.path.join(os.path.dirname(__file__), "AOO.txt")
+        elif (self.state == os.path.join(os.path.dirname(__file__),"VVI.txt")):
+            self.file_name = os.path.join(os.path.dirname(__file__),"VVI.txt")  #"VVI.txt"  #os.path.join(os.path.dirname(__file__), "VVI.txt")
+        elif (self.state == os.path.join(os.path.dirname(__file__),"AAI.txt")):
+            self.file_name = os.path.join(os.path.dirname(__file__),"AAI.txt")  #"AAI.txt"  #os.path.join(os.path.dirname(__file__), "AAI.txt")
         
         
     

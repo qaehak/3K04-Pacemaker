@@ -123,13 +123,13 @@ class Modes:
             mode = self.selected_mode.get().strip() #self.selected_mode.get()
             print(f"Selected mode: '{mode}'") #debugging
             parameters = self.mode_params.get(mode, []) #retrieves parameters specific to selected mode
-            pacemaker_params.set_state(mode) #write new mode into the param
+            self.pacemaker_params.set_state(mode) #write new mode into the param
             
 
             if not parameters:
                 for param in ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width", 
                   "Ventricular Amplitude", "Ventricular Pulse Width", "VRP", "ARP"]:
-                    getattr(pacemaker_params, f'set_{param}')( "" )
+                    getattr(self.pacemaker_params, f'set_{param}')( "" )
                 self.message_label.config(text=f"Parameters for {mode} mode have been updated.")  
                 return
 
@@ -142,28 +142,28 @@ class Modes:
 
                     
                     if param == "Lower Rate Limit":
-                        pacemaker_params.set_LowerRateLimit(combo_value)
+                        self.pacemaker_params.set_LowerRateLimit(combo_value)
 
                     elif param == "Upper Rate Limit":
-                        pacemaker_params.set_UpperRateLimit(combo_value)
+                        self.pacemaker_params.set_UpperRateLimit(combo_value)
 
                     elif param == "Atrial Amplitude":
-                        pacemaker_params.set_AtrialAmplitude(combo_value)
+                        self.pacemaker_params.set_AtrialAmplitude(combo_value)
 
                     elif param == "Atrial Pulse Width":
-                        pacemaker_params.set_AtrialPulseWidth(combo_value)
+                        self.pacemaker_params.set_AtrialPulseWidth(combo_value)
 
                     elif param == "Ventricular Amplitude":
-                        pacemaker_params.set_VentricularAmplitude(combo_value)
+                        self.pacemaker_params.set_VentricularAmplitude(combo_value)
 
                     elif param == "Ventricular Pulse Width":
                         pacemaker_params.set_VentricularPulseWidth(combo_value)
 
                     elif param == "VRP":
-                        pacemaker_params.set_VRP(combo_value)
+                        self.pacemaker_params.set_VRP(combo_value)
 
                     elif param == "ARP":
-                        pacemaker_params.set_ARP(combo_value)
+                        self.pacemaker_params.set_ARP(combo_value)
                      
                     
             self.message_label.config(text=f"Parameters for {mode} mode have been updated.") 
