@@ -54,7 +54,7 @@ def open_home_page():
     app = Modes(home_window, pacemaker_params)
     
     #place graph
-    egram = tk.PhotoImage(file="test_graph.png")
+    egram = tk.PhotoImage(file="heart.png")
     egram_label = tk.Label(home_window, image=egram)
     egram_label.grid(row=1,column = 10)
     
