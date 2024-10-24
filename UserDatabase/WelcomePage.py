@@ -8,6 +8,7 @@ from param import param  # Import the param class from param.py
 db = database.database()
 db.startup()
 
+
 # Function to validate login
 def login():
     username = username_entry.get()
@@ -39,24 +40,24 @@ def sign_up():
 def open_home_page():
     # Destroy the login window
     root.destroy()
-
+    
+    # serena 1234 login to test
     # Create a new window for the home page (from modes.py)
     home_window = tk.Tk()
     home_window.title("Pacemaker Modes Home Page")
+    home_window.minsize(1500,1000)
 
     # Create an instance of the param class and pass it to Modes
     pacemaker_params = param()  # Assuming the param class handles pacemaker parameters
-
+   
     # Pass the new window and pacemaker parameters to the Modes class
     app = Modes(home_window, pacemaker_params)
 
-    # Start the main loop for the home page (from modes.py)
-    home_window.mainloop()
 
 # Create the main window for login
 root = tk.Tk()
 root.title("Login/Sign Up Screen")
-root.geometry("400x300")
+root.geometry("800x600")
 
 # Create a label for the welcome message
 welcome_label = tk.Label(root, text="Welcome! Please login or sign up", font=("Arial", 16))

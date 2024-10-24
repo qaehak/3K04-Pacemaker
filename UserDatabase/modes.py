@@ -19,7 +19,7 @@ from param import param
 class Modes:
 
     def __init__(self, root, pacemaker_params):
-        self.pacemaker_params = pacemaker_params 
+        self.pacemaker_params = pacemaker_params
 
 
         #stores relevant parameters for each mode
