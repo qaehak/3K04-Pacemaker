@@ -102,13 +102,13 @@ class Modes:
     def get_values_for_param(self, param):
         #options for parameters
         if "Lower Rate Limit" in param:
-            return list(range(30, 176))
+            return list(range(30, 175))
         elif "Upper Rate Limit" in param:
-            return list(range(50, 176))
+            return list(range(50, 175))
         elif "Atrial Amplitude" in param or "Ventricular Amplitude" in param:
-            return [round(x * 0.1, 1) for x in range(10, 51)]
+            return [round(x * 0.1, 1) for x in range(5, 71)]
         elif "Pulse Width" in param:
-            return [round(x * 0.01, 2) for x in range(1, 11)]
+            return [0.5] + [round(x * 0.1, 1) for x in range(1, 20)]
         elif "VRP" in param or "ARP" in param:
             return list(range(150, 501, 10))
         else:
