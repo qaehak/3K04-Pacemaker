@@ -157,7 +157,7 @@ class Modes:
                         self.pacemaker_params.set_VentricularAmplitude(combo_value)
 
                     elif param == "Ventricular Pulse Width":
-                        pacemaker_params.set_VentricularPulseWidth(combo_value)
+                        self.pacemaker_params.set_VentricularPulseWidth(combo_value)
 
                     elif param == "VRP":
                         self.pacemaker_params.set_VRP(combo_value)
