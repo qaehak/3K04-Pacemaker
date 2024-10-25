@@ -60,7 +60,7 @@ class database:
         
         #Check if username is taken
         for row in (self.cursor).execute("SELECT username,password,num FROM loginInfo"):
-            if (row[0] == username and row[1] == password):
+            if (row[0] == username and row[1] == password): #change so that passwords dont matter
                 return 2
         
         #Insert valid data into loginInfo table & commit changes to database

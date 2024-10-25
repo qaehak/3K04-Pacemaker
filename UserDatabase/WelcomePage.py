@@ -29,11 +29,11 @@ def sign_up():
     
     add_result = db.signup(username, password)
     
-    if add_result is True:
+    if add_result == 1:
         messagebox.showinfo("Sign Up Success", f"User '{username}' added to the database.")
-    elif add_result is False:
+    elif add_result == 2:
         messagebox.showerror("Error", f"Username '{username}' already exists. Try logging in.")
-    elif add_result is None:
+    elif add_result == 0:
         messagebox.showerror("Error", "Database is full. Cannot add more users.")
 
 # Function to open the home page (from modes.py)
