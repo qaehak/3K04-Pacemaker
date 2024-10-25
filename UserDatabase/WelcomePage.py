@@ -46,6 +46,7 @@ def open_home_page():
     home_window = tk.Tk()
     home_window.title("Pacemaker Modes Home Page")
     home_window.minsize(1500,1000)
+    home_window['bg'] = "#E0DCFB"
     
     # Create an instance of the param class and pass it to Modes
     pacemaker_params = param()  # Assuming the param class handles pacemaker parameters
@@ -57,6 +58,7 @@ def open_home_page():
     egram = tk.PhotoImage(file="heart.png")
     egram_label = tk.Label(home_window, image=egram)
     egram_label.grid(row=1,column = 10)
+    egram_label['bg'] = "#E0DCFB"
     
 
     home_window.mainloop()
@@ -65,29 +67,35 @@ def open_home_page():
 root = tk.Tk()
 root.title("Login/Sign Up Screen")
 root.geometry("800x600")
+root['bg'] = "#E0DCFB"
 
 # Create a label for the welcome message
 welcome_label = tk.Label(root, text="Welcome! Please login or sign up", font=("Arial", 16))
 welcome_label.pack(pady=20)
+welcome_label['bg'] = "#E0DCFB"
 
 # Create labels and entry widgets for username and password
 username_label = tk.Label(root, text="Username:")
 username_label.pack(pady=5)
+username_label['bg'] = "#E0DCFB"
 username_entry = tk.Entry(root)
 username_entry.pack(pady=5)
 
 password_label = tk.Label(root, text="Password:")
 password_label.pack(pady=5)
+password_label['bg'] = "#E0DCFB"
 password_entry = tk.Entry(root, show="*")  # Hide password input
 password_entry.pack(pady=5)
 
 # Create a login button
 login_button = tk.Button(root, text="Login", command=login)
 login_button.pack(pady=10)
+login_button['bg'] = "white"
 
 # Create a sign-up button
 signup_button = tk.Button(root, text="Sign Up", command=sign_up)
 signup_button.pack(pady=10)
+signup_button['bg'] = "white"
 
 # Start the GUI main loop
 root.mainloop()
