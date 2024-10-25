@@ -3,6 +3,7 @@ from tkinter import messagebox
 import database  # Import the database module
 from modes import Modes  # Import the Modes class from modes.py
 from param import param  # Import the param class from param.py
+import os
 
 
 db = database.database()
@@ -55,10 +56,16 @@ def open_home_page():
     app = Modes(home_window, pacemaker_params)
     
     #place graph
-    egram = tk.PhotoImage(file="heart.png")
+    connection = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__),"heart.png"))
+    connection_label = tk.Label(home_window, image=connection)
+    connection_label.grid(row=1,column = 10)
+    connection_label['bg'] = "#E0DCFB"
+    
+    #place graph
+    egram = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__),"test_graph.png"))
     egram_label = tk.Label(home_window, image=egram)
-    egram_label.grid(row=1,column = 10)
-    egram_label['bg'] = "#E0DCFB"
+    egram_label.grid(row=8,column = 10)
+    egram_label['bg'] = "white"
     
 
     home_window.mainloop()
