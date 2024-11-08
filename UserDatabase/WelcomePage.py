@@ -55,16 +55,18 @@ def open_home_page():
     # Pass the new window and pacemaker parameters to the Modes class
     app = Modes(home_window, pacemaker_params)
     
+    
+
     #place graph
     connection = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__),"heart.png"))
     connection_label = tk.Label(home_window, image=connection)
-    connection_label.grid(row=1,column = 10)
+    connection_label.grid(row=1,column = 20)
     connection_label['bg'] = "#E0DCFB"
     
     #place graph
     egram = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__),"test_graph.png"))
     egram_label = tk.Label(home_window, image=egram)
-    egram_label.grid(row=8,column = 10)
+    egram_label.grid(row=8,column = 20)
     egram_label['bg'] = "white"
     
 
