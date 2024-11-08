@@ -24,10 +24,14 @@ class Modes:
 
         #stores relevant parameters for each mode
         self.mode_params = {
-            "AOO": ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width", "ARP"],
+            "AOO": ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width"],
             "VOO": ["Lower Rate Limit", "Upper Rate Limit", "Ventricular Amplitude", "Ventricular Pulse Width"],
-            "AAI": ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width", "ARP"],
-            "VVI": ["Lower Rate Limit", "Upper Rate Limit", "Ventricular Amplitude", "Ventricular Pulse Width", "VRP"]
+            "AAI": ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width", "Atrial Sensitivty", "ARP", "PVRP", "Hysteresis", "Rate Smoothing"],
+            "VVI": ["Lower Rate Limit", "Upper Rate Limit", "Ventricular Amplitude", "Ventricular Pulse Width", "Ventricular Sensitivity", "VRP", "Hysteresis", "Rate Smoothing"],
+            "AOOR": ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Atrial Amplitude", "Atrial Pulse Width", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"],
+            "VOOR": ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Ventricular Amplitude", "Ventricular Pulse Width", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"],
+            "AAIR": ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Atrial Amplitude", "Atrial Pulse Width", "Atrial Sensitivty", "ARP", "PVRP", "Hysteresis", "Rate Smoothing", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"],
+            "VVIR": ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Ventricular Amplitude", "Ventricular Pulse Width", "Ventricular Sensitivity", "VRP", "Hysteresis", "Rate Smoothing", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"],
         }
 
         #current selected mode (default=AOO)
@@ -79,6 +83,8 @@ class Modes:
                 combo.set(self.pacemaker_params.get_LowerRateLimit())
             elif param == "Upper Rate Limit":
                 combo.set(self.pacemaker_params.get_UpperRateLimit())
+            elif param == "Maximum Sensor Rate":
+                combo.set(self.pacemaker_params.get_MaxSensorRate())   
             elif param == "Atrial Amplitude":
                 combo.set(self.pacemaker_params.get_AtrialAmplitude())
             elif param == "Atrial Pulse Width":
@@ -87,30 +93,67 @@ class Modes:
                 combo.set(self.pacemaker_params.get_VentricularAmplitude())
             elif param == "Ventricular Pulse Width":
                 combo.set(self.pacemaker_params.get_VentricularPulseWidth())
+            elif param == "Atrial Sensitivity":
+                combo.set(self.pacemaker_params.get_AtrialSensitivity())
+            elif param == "Ventricular Sensitivity":
+                combo.set(self.pacemaker_params.get_VentricularSensitivity())
             elif param == "VRP":
                 combo.set(self.pacemaker_params.get_VRP())
             elif param == "ARP":
                 combo.set(self.pacemaker_params.get_ARP())
+            elif param == "PVRP":
+                combo.set(self.pacemaker_params.get_PVARP())
+            elif param == "Hysteresis":
+                combo.set(self.pacemaker_params.get_Hysteresis())
+            elif param == "Rate Smoothing":
+                combo.set(self.pacemaker_params.get_RateSmoothing())
+            elif param == "Activity Threshold":
+                combo.set(self.pacemaker_params.get_ActivityThreshold())
+            elif param == "Reaction Time":
+                combo.set(self.pacemaker_params.get_ReactionTime())
+            elif param == "Response Factor":
+                combo.set(self.pacemaker_params.get_ResponseFactor())
+            elif param == "Recovery Time":
+                combo.set(self.pacemaker_params.get_RecoveryTime())
+            
+            
 
 
     def reset_parameters(self):
         #clear previous parameter values from the file
-        for param in ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width", 
-                  "Ventricular Amplitude", "Ventricular Pulse Width", "VRP", "ARP"]:
+        for param in ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Atrial Amplitude", "Atrial Pulse Width", 
+                  "Ventricular Amplitude", "Ventricular Pulse Width", "Atrial Sensitivity", "Ventricular Sensitivity", "VRP", 
+                  "ARP", "PVRP", "Hysteresis", "Rate Smoothing", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"]:
             getattr(self.pacemaker_params, f'set_{param.replace(" ", "")}')("")
 
     def get_values_for_param(self, param):
         #options for parameters
         if "Lower Rate Limit" in param:
-            return list(range(30, 175))
+            return list(range(30, 176))
         elif "Upper Rate Limit" in param:
-            return list(range(50, 175))
+            return list(range(50, 176))
+        elif "Maximum Sensor Rate" in param:
+            return list(range(50, 176))
         elif "Atrial Amplitude" in param or "Ventricular Amplitude" in param:
             return [round(x * 0.1, 1) for x in range(5, 71)]
         elif "Pulse Width" in param:
             return [0.5] + [round(x * 0.1, 1) for x in range(1, 20)]
-        elif "VRP" in param or "ARP" in param:
+        elif "VRP" in param or "ARP" in param or "PVRP" in param:
             return list(range(150, 501, 10))
+        elif "Atrial Sensitivity" in param or "Ventricular Sensitivity" in param:
+            return [0.25] + [0.50] + [0.75] + list(range(1.0, 10))
+        elif "Hysteresis" in param:
+            return ["OFF"] + list(range(50, 176))
+        elif "Rate Smoothing" in param:
+            return ["OFF"] + list(range(3, 27, 3))
+        elif "Activity Threshold" in param:
+            return ["V-Low", "Low", "Med-Low", "Med", "Med-High", "High", "V-High"]
+        elif "Reaction Time" in param:
+            return list(range(10, 51))
+        elif "Response Factor" in param:
+            return list(range(1, 17))
+        elif "Recovery Time" in param:
+            return list(range(2, 17))
         else:
             #empty list for unknown params
             return []  
@@ -127,8 +170,9 @@ class Modes:
             
 
             if not parameters:
-                for param in ["Lower Rate Limit", "Upper Rate Limit", "Atrial Amplitude", "Atrial Pulse Width", 
-                  "Ventricular Amplitude", "Ventricular Pulse Width", "VRP", "ARP"]:
+                for param in ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Atrial Amplitude", "Atrial Pulse Width", 
+                  "Ventricular Amplitude", "Ventricular Pulse Width", "Atrial Sensitivity", "Ventricular Sensitivity", "VRP", 
+                  "ARP", "PVRP", "Hysteresis", "Rate Smoothing", "Activity Threshold", "Reaction Time", "Response Factor", "Recovery Time"]:
                     getattr(self.pacemaker_params, f'set_{param}')( "" )
                 self.message_label.config(text=f"Parameters for {mode} mode have been updated.")  
                 return
@@ -140,12 +184,14 @@ class Modes:
                     combo_value = combo_value = getattr(self, combo_name).get()
                     print(f"Setting {param} to {combo_value}")  #debugging
 
-                    
                     if param == "Lower Rate Limit":
                         self.pacemaker_params.set_LowerRateLimit(combo_value)
 
                     elif param == "Upper Rate Limit":
                         self.pacemaker_params.set_UpperRateLimit(combo_value)
+                    
+                    elif param == "Maximum Sensor Rate":
+                        self.pacemaker_params.set_MaxSensorRate(combo_value)
 
                     elif param == "Atrial Amplitude":
                         self.pacemaker_params.set_AtrialAmplitude(combo_value)
@@ -158,12 +204,37 @@ class Modes:
 
                     elif param == "Ventricular Pulse Width":
                         self.pacemaker_params.set_VentricularPulseWidth(combo_value)
+                    
+                    elif param == "Atrial Sensitivity":
+                        self.pacemaker_params.set_AtrialSensitivity(combo_value)
 
                     elif param == "VRP":
                         self.pacemaker_params.set_VRP(combo_value)
 
                     elif param == "ARP":
                         self.pacemaker_params.set_ARP(combo_value)
+                    
+                    elif param == "PVRP":
+                        self.pacemaker_params.set_PVRP(combo_value)
+                    
+                    elif param == "Hysteresis":
+                        self.pacemaker_params.set_Hysteresis(combo_value)
+
+                    elif param == "Rate Smoothing":
+                        self.pacemaker_params.set_RateSmoothing(combo_value)
+                    
+                    elif param == "Activity Threshold":
+                        self.pacemaker_params.set_ActivityThreshold(combo_value)
+                    
+                    elif param == "Reaction Time":
+                        self.pacemaker_params.set_ReactionTime(combo_value)
+                    
+                    elif param == "Response Factor":
+                        self.pacemaker_params.set_ResponseFactor(combo_value)
+                    
+                    elif param == "Recovery Time":
+                        self.pacemaker_params.set_RecoveryTime(combo_value)
+
                      
                     
             self.message_label.config(text=f"Parameters for {mode} mode have been updated.") 

@@ -17,11 +17,13 @@ class Connection:
 
     def check_connection(self,serPort):
         try:
-            self.ser = serial.Serial(port=serPort,baudrate=115200) 
+            self.ser = serial.Serial(port=self.serPort,baudrate=115200) 
             if self.ser.is_open:
                 self.conn = True # DCM and Pacemaker Shield are connected
+                print("\nConnected")
             else:
                 self.conn = False # DCM and Pacemaker Shield are disconnected
+                print("\nNot Connected")
         except serial.SerialException as e:
             self.conn = False # Connection Failed
 
