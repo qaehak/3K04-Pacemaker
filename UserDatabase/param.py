@@ -72,12 +72,12 @@
 #        - get_AtrialSensitivity(self): getter; returns AS
 #        - get_VentricularSensitivity(self): getter; returns VS
 #        - get_PVARP(self): getter; returns PVARP
-#        - get_H(self): getter; returns H
-#        - get_RS(self): getter; returns RS
-#        - get_AT(self): getter; returns AT
-#        - get_RT(self): getter; returns RT
-#        - get_RF(self): getter; returns RF
-#        - get_RECT(self): getter; returns RECT
+#        - get_Hysteresis(self): getter; returns H
+#        - get_RateSmoothing(self): getter; returns RS
+#        - get_ActivityThreshold(self): getter; returns AT
+#        - get_ReactionTime(self): getter; returns RT
+#        - get_ResponseFactor(self): getter; returns RF
+#        - get_RecoveryTime(self): getter; returns RECT
 
 #        - set_state(self, state): setter; sets state and saves to file
 #        - set_LowerRateLimit(self, new_LRL): setter; sets LRL and saves to file
@@ -92,12 +92,12 @@
 #        - set_AtrialSensitivity(self, new_ARP): setter; sets AS and saves to file
 #        - set_VentricularSensitivity(self, new_ARP): setter; sets VS and saves to file
 #        - set_PVARP(self, new_ARP): setter; sets PVARP and saves to file
-#        - set_H(self, new_ARP): setter; sets H and saves to file
-#        - set_RS(self, new_ARP): setter; sets RS and saves to file
-#        - set_AT(self, new_ARP): setter; sets AT and saves to file
-#        - set_RT(self, new_ARP): setter; sets RT and saves to file
-#        - set_RF(self, new_ARP): setter; sets RF and saves to file
-#        - set_RECT(self, new_ARP): setter; sets RECT and saves to file
+#        - set_Hysteresis(self, new_ARP): setter; sets H and saves to file
+#        - set_RateSmoothing(self, new_ARP): setter; sets RS and saves to file
+#        - set_ActivityThreshold(self, new_ARP): setter; sets AT and saves to file
+#        - set_ReactionTime(self, new_ARP): setter; sets RT and saves to file
+#        - set_ResponseFactor(self, new_ARP): setter; sets RF and saves to file
+#        - set_RecoveryTime(self, new_ARP): setter; sets RECT and saves to file
 #
 import os
 class param:
@@ -106,7 +106,7 @@ class param:
     def __init__(self):
         #initialize member variables
         self.file_name = os.path.join(os.path.dirname(__file__),"AOO.txt")
-        self.state = os.path.join(os.path.dirname(__file__),"AOO.txt")
+        self.state = "AOO"
         self.LRL = '0'
         self.URL = '0'
         self.AA = '0'
@@ -117,6 +117,7 @@ class param:
         self.ARP = '0'
         self.AS = '0'
         self.VS = '0'
+        self.MSR = '0'
         self.PVARP = '0'
         self.H = '0'
         self.RS = '0'
@@ -279,28 +280,28 @@ class param:
             
     def get_file_Name(self):
         #check which file to open based on state 
-        if (self.state == os.path.join(os.path.dirname(__file__),"VOO.txt")):
+        if (self.state == "VOO"):
             self.file_name = os.path.join(os.path.dirname(__file__),"VOO.txt")  #"VOO.txt"  #os.path.join(os.path.dirname(__file__), "VOO.txt") (Needed this to run on my end - Fatima)
         
-        elif (self.state == os.path.join(os.path.dirname(__file__),"AOO.txt")):
+        elif (self.state == "AOO"):
             self.file_name = os.path.join(os.path.dirname(__file__),"AOO.txt")  #"AOO.txt"  #os.path.join(os.path.dirname(__file__), "AOO.txt")
         
-        elif (self.state == os.path.join(os.path.dirname(__file__),"VVI.txt")):
+        elif (self.state == "VVI"):
             self.file_name = os.path.join(os.path.dirname(__file__),"VVI.txt")  #"VVI.txt"  #os.path.join(os.path.dirname(__file__), "VVI.txt")
         
-        elif (self.state == os.path.join(os.path.dirname(__file__),"AAI.txt")):
+        elif (self.state == "AAI"):
             self.file_name = os.path.join(os.path.dirname(__file__),"AAI.txt")  #"AAI.txt"  #os.path.join(os.path.dirname(__file__), "AAI.txt")
         
-        elif (self.state == os.path.join(os.path.dirname(__file__),"AOOR.txt")):
+        elif (self.state == "AOOR"):
             self.file_name = os.path.join(os.path.dirname(__file__),"AOOR.txt")
         
-        elif (self.state == os.path.join(os.path.dirname(__file__),"VOOR.txt")):
+        elif (self.state == "VOOR"):
             self.file_name = os.path.join(os.path.dirname(__file__),"VOOR.txt")
         
-        elif (self.state == os.path.join(os.path.dirname(__file__),"AAIR.txt")):
+        elif (self.state == "AAIR"):
             self.file_name = os.path.join(os.path.dirname(__file__),"AAIR.txt")
         
-        elif (self.state == os.path.join(os.path.dirname(__file__),"VVIR.txt")):
+        elif (self.state == "VVIR"):
             self.file_name = os.path.join(os.path.dirname(__file__),"VVIR.txt")
         
     
@@ -344,22 +345,22 @@ class param:
     def get_PVARP(self):
         return self.PVARP
     
-    def get_H(self):
+    def get_Hysteresis(self):
         return self.H
     
-    def get_RS(self):
+    def get_RateSmoothing(self):
         return self.RS
     
-    def get_AT(self):
+    def get_ActivityThreshold(self):
         return self.AT
     
-    def get_RT(self):
+    def get_ReactionTime(self):
         return self.RT
     
-    def get_RF(self):
+    def get_ResponseFactor(self):
         return self.RF
     
-    def get_RECT(self):
+    def get_RecoveryTime(self):
         return self.RECT
     
     #-----------------setter functions -----------------------
@@ -377,6 +378,18 @@ class param:
                 
         elif (self.state == "AOO" or self.state == "AAI"): #AOO and AAI have same file format
             self.load_param_AOO_AAI()
+            
+        elif (self.state == "AOOR"):
+            self.load_param_AOOR()
+        
+        elif (self.state == "VOOR"):
+            self.load_param_VOOR()
+            
+        elif (self.state == "AAIR"):
+            self.load_param_AAIR()
+        
+        elif (self.state == "VVIR"):
+            self.load_param_VVIR()
                 
     
     def set_LowerRateLimit(self, new_LRL):
@@ -442,7 +455,7 @@ class param:
         if (self.state == "AAIR"):
             self.save_param(new_PVARP, 9)
             
-    def set_H(self, new_H):
+    def set_Hysteresis(self, new_H):
         self.H = new_H
         
         #save param to line relevant to mode/state
@@ -452,7 +465,7 @@ class param:
             self.save_param(new_H, 9)
             
     
-    def set_RS(self, new_RS):
+    def set_RateSmoothing(self, new_RS):
         self.RS = new_RS
         
         #save param to line relevant to mode/state
@@ -462,7 +475,7 @@ class param:
             self.save_param(new_H, 10)
             
     
-    def set_AT(self, new_AT):
+    def set_ActivityThreshold(self, new_AT):
         self.AT = new_AT
         
         #save param to line relevant to mode/state
@@ -473,7 +486,7 @@ class param:
         elif (self.state == "VVIR"):
             self.save_param(new_AT, 11)
             
-    def set_RT(self, new_RT):
+    def set_ReactionTime(self, new_RT):
         self.RT = new_RT
         
         #save param to line relevant to mode/state
@@ -484,7 +497,7 @@ class param:
         elif (self.state == "VVIR"):
             self.save_param(new_RT, 12)
             
-    def set_RF(self, new_RF):
+    def set_ResponseFactor(self, new_RF):
         self.RF = new_RF
         
         #save param to line relevant to mode/state
@@ -495,7 +508,7 @@ class param:
         elif (self.state == "VVIR"):
             self.save_param(new_RF, 13)
             
-    def set_RECT(self, new_RECT):
+    def set_RecoveryTime(self, new_RECT):
         self.RECT = new_RECT
         
         #save param to line relevant to mode/state
