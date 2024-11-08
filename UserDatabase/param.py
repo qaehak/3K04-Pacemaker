@@ -470,9 +470,9 @@ class param:
         
         #save param to line relevant to mode/state
         if (self.state == "AAIR"):
-            self.save_param(new_H, 11)
+            self.save_param(new_RS, 11)
         elif (self.state == "VVIR"):
-            self.save_param(new_H, 10)
+            self.save_param(new_RS, 10)
             
     
     def set_ActivityThreshold(self, new_AT):
