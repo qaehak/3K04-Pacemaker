@@ -141,7 +141,7 @@ class Modes:
         elif "VRP" in param or "ARP" in param or "PVRP" in param:
             return list(range(150, 501, 10))
         elif "Atrial Sensitivity" in param or "Ventricular Sensitivity" in param:
-            return [0.25] + [0.50] + [0.75] + list(range(1.0, 10))
+            return [0.25, 0.50, 0.75] + [float(i) for i in range(1, 10)]
         elif "Hysteresis" in param:
             return ["OFF"] + list(range(50, 176))
         elif "Rate Smoothing" in param:
