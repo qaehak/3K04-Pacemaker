@@ -39,7 +39,7 @@ class Connection:
         return self.status
     
     def pack_AOO(self):
-        data = [self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_AtrialAmplitude(),
+        data = [self.mode, self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_AtrialAmplitude(),
                 self.params.get_AtrialPulseWidth()]
         
         data_binary = b''
@@ -55,7 +55,7 @@ class Connection:
         self.ser.write(data_binary)
         
     def pack_VOO(self):
-        data = [self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_VentricularAmplitude(),
+        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_VentricularAmplitude(),
                 self.params.get_VentricularPulseWidth()]
         
         data_binary = b''
@@ -69,7 +69,7 @@ class Connection:
             
 
     def pack_AAI(self):
-        data = [self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_AtrialAmplitude(),
+        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_AtrialAmplitude(),
                 self.params.get_AtrialPulseWidth(), self.params.get_ARP()]
         
         data_binary = b''
@@ -86,7 +86,7 @@ class Connection:
             
     
     def pack_VVI(self):
-        data = [self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_VentricularAmplitude(),
+        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_VentricularAmplitude(),
                 self.params.get_VentricularPulseWidth(), self.params.get_VRP()]
         
         data_binary = b''
@@ -102,7 +102,7 @@ class Connection:
         self.ser.write(data_binary)    
             
     def pack_AOOR(self):
-        data = [self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_AtrialAmplitude(),
+        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_AtrialAmplitude(),
                 self.params.get_AtrialPulseWidth(), self.params.get_MaxSensorRate(), self.params.get_ActivityThreshold(),
                 self.params.get_ReactionTime(), self.params.get_ResponseFactor(), self.params.get_RecoveryTime()]
         
@@ -120,7 +120,7 @@ class Connection:
             
             
     def pack_VOO(self):
-        data = [self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_VentricularAmplitude(),
+        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_VentricularAmplitude(),
                 self.params.get_VentricularPulseWidth(), self.params.get_MaxSensorRate(), self.params.get_ActivityThreshold(),
                 self.params.get_ReactionTime(), self.params.get_ResponseFactor(), self.params.get_RecoveryTime()]
         
@@ -137,7 +137,7 @@ class Connection:
         self.ser.write(data_binary)      
 
     def pack_AAIR(self):
-        data = [self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_AtrialAmplitude(),
+        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_AtrialAmplitude(),
                 self.params.get_AtrialPulseWidth(), self.params.get_ARP(), self.params.get_MaxSensorRate()
                 self.params.get_AtrialSensitivity(), self.params.get_PVARP(), self.params.get_Hysteresis(),
                 self.params.get_RateSmoothing(), self.params.get_ActivityThreshold(), self.params.get_ReactionTime(),
@@ -156,7 +156,7 @@ class Connection:
         self.ser.write(data_binary)      
             
     def pack_VVIR(self):
-        data = [self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_VentricularAmplitude(),
+        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_VentricularAmplitude(),
                 self.params.get_VentricularPulseWidth(), self.params.get_VRP(), self.params.get_MaxSensorRate()
                 self.params.get_VentricularSensitivity(), self.params.get_Hysteresis(),
                 self.params.get_RateSmoothing(), self.params.get_ActivityThreshold(), self.params.get_ReactionTime(),
