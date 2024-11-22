@@ -138,7 +138,7 @@ class Connection:
 
     def pack_AAIR(self):
         data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_AtrialAmplitude(),
-                self.params.get_AtrialPulseWidth(), self.params.get_ARP(), self.params.get_MaxSensorRate()
+                self.params.get_AtrialPulseWidth(), self.params.get_ARP(), self.params.get_MaxSensorRate(),
                 self.params.get_AtrialSensitivity(), self.params.get_PVARP(), self.params.get_Hysteresis(),
                 self.params.get_RateSmoothing(), self.params.get_ActivityThreshold(), self.params.get_ReactionTime(),
                 self.params.get_ResponseFactor(), self.params.get_RecoveryTime()]
@@ -157,7 +157,7 @@ class Connection:
             
     def pack_VVIR(self):
         data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_VentricularAmplitude(),
-                self.params.get_VentricularPulseWidth(), self.params.get_VRP(), self.params.get_MaxSensorRate()
+                self.params.get_VentricularPulseWidth(), self.params.get_VRP(), self.params.get_MaxSensorRate(),
                 self.params.get_VentricularSensitivity(), self.params.get_Hysteresis(),
                 self.params.get_RateSmoothing(), self.params.get_ActivityThreshold(), self.params.get_ReactionTime(),
                 self.params.get_ResponseFactor(), self.params.get_RecoveryTime()]
