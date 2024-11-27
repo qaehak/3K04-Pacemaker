@@ -4,8 +4,8 @@
 #   Helpful for this: https://pyserial.readthedocs.io/en/latest/
 #   https://docs.python.org/3/library/struct.html
 #   https://stackoverflow.com/questions/24956308/how-to-write-integers-to-port-using-pyserial
-
-
+# ONLY FOR SENDING PACKETS TO PACEMAKER
+#
 import serial
 import struct
 import param
@@ -20,7 +20,7 @@ class Connection:
         self.params = params
 
 
-    def check_connection(self,serPort):
+    def connect(self):
         try:
             self.ser = serial.Serial(port=self.serPort,baudrate=115200) 
             if self.ser.is_open:
@@ -38,15 +38,57 @@ class Connection:
     def get_connection(self):
         return self.status
     
+    def transmit(self):
+        #-----------signal to pacemaker data is coming------------
+        sync = 22 # 0x16
+        fn_code = 85 #0x55
+        state = str.encode(self.params.get_state())
+        data_binary = b''
+        
+        data_binary += struct.pack('>B', sync) #little endian
+        data_binary += struct.pack('>B', fn_code)
+        data_binary += struct.pack('>3s', state) #3-byte char array (string)
+        
+        print("\n")
+        print(data_binary)   #for debugging
+        
+        #send via UART
+        self.ser.write(data_binary)
+        
+        #---------------Pack relevant parameters based on mode--------------
+        if (state == "AOO"):
+            self.pack_AOO()
+        elif (state == "VOO"):
+            self.pack_VOO()
+        elif (state == "AAI"):
+            self.pack_AAI()
+        elif (state == "VVI"):
+            self.pack_VVI()
+        elif (state == "AOOR"):
+            self.pack_AOOR()
+        elif (state == "VOOR"):
+            self.pack_VOOR()
+        elif (state == "AAIR"):
+            self.pack_AAIR()
+        elif (state == "VVIR"):
+            self.pack_VVIR()
+        
+    
+    
+    #-----------------------------Packing functions---------------------------------
+    # TRANSMISSION ORDER IS AS FOLLOWS: sync (1byte), fn_code(1byte), mode(3bytes), ARP, VRP, LowerRateLimit, UpperRateLimit,
+    # MaxSensorRate, AtrialAmplitude, AtrialPulseWidth, VentricularAmplitude, VentricularPulseWidth,
+    # AtrialSensitivity, VentricalSensitivity, ReactionTime, ActivityThreshold, ResponseFactor, RecoveryTime
+    
     def pack_AOO(self):
-        data = [self.mode, self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_AtrialAmplitude(),
-                self.params.get_AtrialPulseWidth()]
+        data = [0,0, float(self.params.get_LowerRateLimit()), float(self.params.get_UpperRateLimit()), 0,  float(self.params.get_AtrialAmplitude()),
+                float(self.params.get_AtrialPulseWidth()), 0, 0, 0, 0, 0, 0, 0, 0]
         
         data_binary = b''
         
         #pack each element
-        for p in data:
-            data_binary += struct.pack('<B', p) #little endian
+        for d in data:
+            data_binary += struct.pack('<f', d) #little endian float
         
         print("\n")
         print(data_binary)
@@ -54,29 +96,32 @@ class Connection:
         #send via UART here:
         self.ser.write(data_binary)
         
+        
+        
     def pack_VOO(self):
-        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_VentricularAmplitude(),
-                self.params.get_VentricularPulseWidth()]
+        data = [0,0, float(self.params.get_LowerRateLimit()), float(self.params.get_UpperRateLimit()), 0, 0, 0,
+                float(self.params.get_VentricularAmplitude()), float(self.params.get_VentricularPulseWidth()), 0, 0, 0, 0, 0, 0]
         
         data_binary = b''
         
         #pack each element
-        for p in data:
-            data_binary += struct.pack('<B', p) #little endian
+        for d in data:
+            data_binary += struct.pack('<f', d) #little endian float
             
         #send via UART here:
         self.ser.write(data_binary)
+        
             
 
     def pack_AAI(self):
-        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_AtrialAmplitude(),
-                self.params.get_AtrialPulseWidth(), self.params.get_ARP()]
+        data = [float(self.params.get_ARP()), 0, float(self.params.get_LowerRateLimit()), float(self.params.get_UpperRateLimit()), 0,  float(self.params.get_AtrialAmplitude()),
+                float(self.params.get_AtrialPulseWidth()), 0, 0, 0, 0, 0, 0, 0, 0]
         
         data_binary = b''
         
         #pack each element
-        for p in data:
-            data_binary += struct.pack('<B', p) #little endian
+        for d in data:
+            data_binary += struct.pack('<f', d) #little endian float
          
         print("\n")
         print(data_binary)
@@ -86,14 +131,14 @@ class Connection:
             
     
     def pack_VVI(self):
-        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_VentricularAmplitude(),
-                self.params.get_VentricularPulseWidth(), self.params.get_VRP()]
+        data = [0, float(self.params.get_VRP()), float(self.params.get_LowerRateLimit()), float(self.params.get_UpperRateLimit()), 0, 0, 0,
+                float(self.params.get_VentricularAmplitude()), float(self.params.get_VentricularPulseWidth()), 0, 0, 0, 0, 0, 0]
         
         data_binary = b''
         
         #pack each element
-        for p in data:
-            data_binary += struct.pack('<B', p) #little endian
+        for d in data:
+            data_binary += struct.pack('<f', d) #little endian float
         
         print("\n")
         print(data_binary)
@@ -102,15 +147,15 @@ class Connection:
         self.ser.write(data_binary)    
             
     def pack_AOOR(self):
-        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_AtrialAmplitude(),
-                self.params.get_AtrialPulseWidth(), self.params.get_MaxSensorRate(), self.params.get_ActivityThreshold(),
-                self.params.get_ReactionTime(), self.params.get_ResponseFactor(), self.params.get_RecoveryTime()]
+        data = [0, 0, float(self.params.get_LowerRateLimit()), float(self.params.get_UpperRateLimit()), float(self.params.get_MaxSensorRate()),
+                float(self.params.get_AtrialAmplitude()), float(self.params.get_AtrialPulseWidth()), 0, 0, 0, 0, float(self.params.get_ReactionTime()),
+                float(self.params.get_ActivityThreshold()), float(self.params.get_ResponseFactor()), float(self.params.get_RecoveryTime())]
         
         data_binary = b''
         
         #pack each element
-        for p in data:
-            data_binary += struct.pack('<B', p) #little endian
+        for d in data:
+            data_binary += struct.pack('<f', d) #little endian float
         
         print("\n")
         print(data_binary)
@@ -120,15 +165,16 @@ class Connection:
             
             
     def pack_VOO(self):
-        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_VentricularAmplitude(),
-                self.params.get_VentricularPulseWidth(), self.params.get_MaxSensorRate(), self.params.get_ActivityThreshold(),
-                self.params.get_ReactionTime(), self.params.get_ResponseFactor(), self.params.get_RecoveryTime()]
+        data = [0, 0, float(self.params.get_LowerRateLimit()), float(self.params.get_UpperRateLimit()), float(self.params.get_MaxSensorRate()), 0, 0,
+                float(self.params.get_VentricularAmplitude()), float(self.params.get_VentricularPulseWidth()), 0, 0, float(self.params.get_ReactionTime()),
+                float(self.params.get_ActivityThreshold()), float(self.params.get_ResponseFactor()), float(self.params.get_RecoveryTime())]
+
         
         data_binary = b''
         
         #pack each element
-        for p in data:
-            data_binary += struct.pack('<B', p) #little endian
+        for d in data:
+            data_binary += struct.pack('<f', d) #little endian float
         
         print("\n")
         print(data_binary)
@@ -137,36 +183,36 @@ class Connection:
         self.ser.write(data_binary)      
 
     def pack_AAIR(self):
-        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_AtrialAmplitude(),
-                self.params.get_AtrialPulseWidth(), self.params.get_ARP(), self.params.get_MaxSensorRate(),
-                self.params.get_AtrialSensitivity(), self.params.get_PVARP(), self.params.get_Hysteresis(),
-                self.params.get_RateSmoothing(), self.params.get_ActivityThreshold(), self.params.get_ReactionTime(),
-                self.params.get_ResponseFactor(), self.params.get_RecoveryTime()]
+        # PVARP ???? Hysteresis ????
+        data = [float(self.params.get_ARP()), 0, float(self.params.get_LowerRateLimit()), float(self.params.get_UpperRateLimit()), float(self.params.get_MaxSensorRate()),
+                float(self.params.get_AtrialAmplitude()), float(self.params.get_AtrialPulseWidth()), 0, 0, float(self.params.get_AtrialSensitivity()), 0,
+                float(self.params.get_ReactionTime()), float(self.params.get_ActivityThreshold()), float(self.params.get_ResponseFactor()), float(self.params.get_RecoveryTime())]
         
         data_binary = b''
         
         #pack each element
-        for p in data:
-            data_binary += struct.pack('<B', p) #little endian
+        for d in data:
+            data_binary += struct.pack('<f', d) #little endian float
             
         print("\n")
         print(data_binary)
         
         #send via UART here:
-        self.ser.write(data_binary)      
+        self.ser.write(data_binary)
+        
+        
             
     def pack_VVIR(self):
-        data = [self.params.get_state(), self.params.get_LowerRateLimit(), self.params.get_UpperRateLimit(), self.params.get_VentricularAmplitude(),
-                self.params.get_VentricularPulseWidth(), self.params.get_VRP(), self.params.get_MaxSensorRate(),
-                self.params.get_VentricularSensitivity(), self.params.get_Hysteresis(),
-                self.params.get_RateSmoothing(), self.params.get_ActivityThreshold(), self.params.get_ReactionTime(),
-                self.params.get_ResponseFactor(), self.params.get_RecoveryTime()]
+        # RATE SMOOTHING ????
+        data = [0, float(self.params.get_VRP()), float(self.params.get_LowerRateLimit()), float(self.params.get_UpperRateLimit()), float(self.params.get_MaxSensorRate()), 0, 0,
+                float(self.params.get_VentricularAmplitude()), float(self.params.get_VentricularPulseWidth()), 0, float(self.params.get_VentricularSensitivity()), float(self.params.get_ReactionTime()),
+                float(self.params.get_ActivityThreshold()), float(self.params.get_ResponseFactor()), float(self.params.get_RecoveryTime())]
         
         data_binary = b''
         
         #pack each element
-        for p in data:
-            data_binary += struct.pack('<B', p) #little endian
+        for d in data:
+            data_binary += struct.pack('<f', d) #little endian float
         
         print("\n")
         print(data_binary)
@@ -174,11 +220,6 @@ class Connection:
         #send via UART here:
         self.ser.write(data_binary)      
     
-    def recieve_data(self):
-        print("recieving data")
-        # use while loop to wait for data - maybe in WelcomePage.py
-        # have some logic for interupting loop when data needs to be sent
-
     
     def close_connection(self):
         if self.ser and self.ser.is_open:

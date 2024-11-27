@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 #     x = [int(line.split()[0]) for line in lines]
 #     y = [int(line.split()[1]) for line in lines]
 #     df = pd.DataFrame({x,y})
-
+#--------------PREVIOUS TESTER CODE---------------------------------------
 df = pd.read_csv("test_data.txt",sep='\s+',header=None)
 df = pd.DataFrame(df)
 
@@ -34,3 +34,18 @@ plt.savefig("testplot.png")
 
 #display plot
 plt.show()
+#-------------------------------------------------------
+
+#get realtime data for number of seconds
+#figure out how we are going to format data in x,y
+#to constantly update graph, once a specific buffer of points were recieved, replot graph
+time = 0
+while(True):
+    time = time + 1
+    print('time:', time)
+    data_raw = ser.readline(1)
+    print(data_raw)
+    print("\n")
+    if time == 100:
+        break
+    
