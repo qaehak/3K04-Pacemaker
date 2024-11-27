@@ -1,51 +1,56 @@
-# Test how to plot data
-
-import seaborn as sns
-import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+import random
+import time
 
-#create data frame
-#df = pd.DataFrame({'x': [0,1,2,3],
-#                   'y': [0,1,2,3]})
+# Initialize data storage
+x_data = []
+y_data = []
 
-# with open("test_data.txt", 'r') as f:
-#     lines = f.readlines()
-#     x = [int(line.split()[0]) for line in lines]
-#     y = [int(line.split()[1]) for line in lines]
-#     df = pd.DataFrame({x,y})
-#--------------PREVIOUS TESTER CODE---------------------------------------
-df = pd.read_csv("test_data.txt",sep='\s+',header=None)
-df = pd.DataFrame(df)
+# Initialize the plot
+fig, ax = plt.subplots()
+line, = ax.plot([], [], lw=2, label="Real-Time Data")
 
-x1 = df[0]
-y1 = df[1]
-#set up seaborn
-sns.set()
+# Set axis labels and title
+ax.set_title("Real-Time Data Visualization (Fake Data)")
+ax.set_xlabel("Time (s)")
+ax.set_ylabel("Value")
+ax.legend()
 
-#set axis
-ax = sns.lineplot(data=df, x=x1,y=y1)
-print(x1)
-print(y1)
+# Set initial axis limits
+ax.set_xlim(0, 100)
+ax.set_ylim(-10, 10)
 
-plt.title("Test")
+# Update function for the animation
+start_time = time.time()
 
-#save plot as png
-plt.savefig("testplot.png")
+def update(frame):
+    global x_data, y_data
 
-#display plot
+    # Generate fake data
+    current_time = time.time() - start_time
+    y_value = random.uniform(-5, 5)
+
+    # Append data to the lists
+    x_data.append(current_time)
+    y_data.append(y_value)
+
+    # Keep only the last 100 points
+    if len(x_data) > 100:
+        x_data.pop(0)
+        y_data.pop(0)
+
+    # Update line data
+    line.set_data(x_data, y_data)
+
+    # Dynamically adjust axis limits
+    ax.set_xlim(max(0, current_time - 10), current_time + 2)
+    ax.set_ylim(min(y_data) - 2, max(y_data) + 2)
+
+    return line,
+
+# Initialize animation
+ani = FuncAnimation(fig, update, interval=100)
+
+# Display plot
 plt.show()
-#-------------------------------------------------------
-
-#get realtime data for number of seconds
-#figure out how we are going to format data in x,y
-#to constantly update graph, once a specific buffer of points were recieved, replot graph
-time = 0
-while(True):
-    time = time + 1
-    print('time:', time)
-    data_raw = ser.readline(1)
-    print(data_raw)
-    print("\n")
-    if time == 100:
-        break
-    
