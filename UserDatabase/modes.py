@@ -147,7 +147,7 @@ class Modes:
         elif "Rate Smoothing" in param:
             return ["OFF"] + list(range(3, 27, 3))
         elif "Activity Threshold" in param:
-            return ["V-Low", "Low", "Med-Low", "Med", "Med-High", "High", "V-High"]
+            return [0.7, 1.4, 2.1, 2.8, 3.5, 4.2, 4.9]
         elif "Reaction Time" in param:
             return list(range(10, 51))
         elif "Response Factor" in param:
