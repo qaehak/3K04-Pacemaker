@@ -1,14 +1,53 @@
 import tkinter as tk
 from tkinter import messagebox
-import database  # Import the database module
-from modes import Modes  # Import the Modes class from modes.py
-from param import param  # Import the param class from param.py
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+import random
+import time
+import database
+from modes import Modes
+from param import param
 import os
 
 
 db = database.database()
 db.startup()
 
+
+# Initialize data storage for the graph
+x_data = []
+y_data = []
+start_time = time.time()
+
+# Function to update the graph
+def update_graph():
+    global x_data, y_data
+
+    # Generate fake data
+    current_time = time.time() - start_time
+    y_value = random.uniform(-5, 5)
+
+    # Append data to the lists
+    x_data.append(current_time)
+    y_data.append(y_value)
+
+    # Keep only the last 100 points
+    if len(x_data) > 100:
+        x_data.pop(0)
+        y_data.pop(0)
+
+    # Update the plot data
+    line.set_data(x_data, y_data)
+
+    # Adjust axis limits dynamically
+    ax.set_xlim(max(0, current_time - 10), current_time + 2)
+    ax.set_ylim(min(y_data) - 2, max(y_data) + 2)
+
+    # Redraw the canvas
+    canvas.draw()
+
+    # Schedule the next update
+    graph_frame.after(100, update_graph)
 
 # Function to validate login
 def login():
@@ -71,20 +110,44 @@ def open_home_page():
     logout_button.grid(row=0, column=20, padx=10, pady=10, sticky="nw")
     logout_button['bg'] = "white"
 
-    #place graph
-    connection = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__),"heart.png"))
-    connection_label = tk.Label(home_window, image=connection)
-    connection_label.grid(row=1,column = 19, sticky= "e")
-    connection_label['bg'] = "#E0DCFB"
-    
-    #place graph
-    egram = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__),"test_graph.png"))
-    egram_label = tk.Label(home_window, image=egram)
-    egram_label.grid(row=8,column = 19, sticky= "e")
-    egram_label['bg'] = "white"
-    
+# Place the heart image as a button
+    connection_image = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__), "heart.png"))
+    connection_button = tk.Label(home_window, image=connection_image, bg="#E0DCFB")
+    connection_button.grid(row=1, column=19, sticky="e")
+    connection_button.image = connection_image
+
+    # Embed the real-time graph in the home page
+    global graph_frame, canvas, line, ax
+    graph_frame = tk.Frame(home_window, bg="white")
+    graph_frame.grid(row=8, column=19, sticky="e", padx=20, pady=20)
+
+    # Create a matplotlib figure
+    fig = Figure(figsize=(5, 4), dpi=100)
+    ax = fig.add_subplot(111)
+    ax.set_title("Real-Time Data Visualization")
+    ax.set_xlabel("Time (s)")
+    ax.set_ylabel("Value")
+    ax.set_xlim(0, 10)
+    ax.set_ylim(-10, 10)
+    line, = ax.plot([], [], lw=2, label="Real-Time Data")
+    ax.legend()
+
+    # Embed the figure in the tkinter canvas
+    canvas = FigureCanvasTkAgg(fig, master=graph_frame)
+    canvas_widget = canvas.get_tk_widget()
+    canvas_widget.pack()
+
+    # Start the real-time graph update
+    update_graph()
+
 
     home_window.mainloop()
+
+# Function to display the graph (calls plot.py logic)
+def show_graph():
+    # Use the `plot.show_graph()` function to create the graph in a new window
+    plot.show_graph()
+
 
 def clear_window(window):
     for widget in window.winfo_children():
