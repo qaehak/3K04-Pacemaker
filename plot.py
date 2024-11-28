@@ -12,7 +12,7 @@ fig, ax = plt.subplots()
 line, = ax.plot([], [], lw=2, label="Real-Time Data")
 
 # Set axis labels and title
-ax.set_title("Real-Time Data Visualization (Fake Data)")
+ax.set_title("Real-Time Data Visualization")
 ax.set_xlabel("Time (s)")
 ax.set_ylabel("Value")
 ax.legend()
