@@ -9,10 +9,8 @@ from modes import Modes
 from param import param
 import os
 
-
 db = database.database()
 db.startup()
-
 
 # Initialize data storage for the graph
 x_data = []
@@ -193,8 +191,6 @@ def open_home_page():
     update_graph_2()
 
     home_window.mainloop()
-
-
 
 def clear_window(window):
     for widget in window.winfo_children():
