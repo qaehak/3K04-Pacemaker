@@ -19,35 +19,71 @@ x_data = []
 y_data = []
 start_time = time.time()
 
-# Function to update the graph
-def update_graph():
-    global x_data, y_data
+# Initialize data storage for both graphs
+x_data_1, y_data_1 = [], []
+x_data_2, y_data_2 = [], []
+start_time = time.time()
+
+# Function to update the first graph
+def update_graph_1():
+    global x_data_1, y_data_1
 
     # Generate fake data
     current_time = time.time() - start_time
     y_value = random.uniform(-5, 5)
 
     # Append data to the lists
-    x_data.append(current_time)
-    y_data.append(y_value)
+    x_data_1.append(current_time)
+    y_data_1.append(y_value)
 
     # Keep only the last 100 points
-    if len(x_data) > 100:
-        x_data.pop(0)
-        y_data.pop(0)
+    if len(x_data_1) > 100:
+        x_data_1.pop(0)
+        y_data_1.pop(0)
 
     # Update the plot data
-    line.set_data(x_data, y_data)
+    line_1.set_data(x_data_1, y_data_1)
 
     # Adjust axis limits dynamically
-    ax.set_xlim(max(0, current_time - 10), current_time + 2)
-    ax.set_ylim(min(y_data) - 2, max(y_data) + 2)
+    ax_1.set_xlim(max(0, current_time - 10), current_time + 2)
+    ax_1.set_ylim(min(y_data_1) - 2, max(y_data_1) + 2)
 
     # Redraw the canvas
-    canvas.draw()
+    canvas_1.draw()
 
     # Schedule the next update
-    graph_frame.after(100, update_graph)
+    graph_frame_1.after(100, update_graph_1)
+
+# Function to update the second graph
+def update_graph_2():
+    global x_data_2, y_data_2
+
+    # Generate fake data
+    current_time = time.time() - start_time
+    y_value = random.uniform(-5, 5)
+
+    # Append data to the lists
+    x_data_2.append(current_time)
+    y_data_2.append(y_value)
+
+    # Keep only the last 100 points
+    if len(x_data_2) > 100:
+        x_data_2.pop(0)
+        y_data_2.pop(0)
+
+    # Update the plot data
+    line_2.set_data(x_data_2, y_data_2)
+
+    # Adjust axis limits dynamically
+    ax_2.set_xlim(max(0, current_time - 10), current_time + 2)
+    ax_2.set_ylim(min(y_data_2) - 2, max(y_data_2) + 2)
+
+    # Redraw the canvas
+    canvas_2.draw()
+
+    # Schedule the next update
+    graph_frame_2.after(100, update_graph_2)
+
 
 # Function to validate login
 def login():
@@ -116,37 +152,48 @@ def open_home_page():
     connection_button.grid(row=1, column=19, sticky="e")
     connection_button.image = connection_image
 
-    # Embed the real-time graph in the home page
-    global graph_frame, canvas, line, ax
-    graph_frame = tk.Frame(home_window, bg="white")
-    graph_frame.grid(row=8, column=19, sticky="e", padx=20, pady=20)
+    # Embed first real-time graph
+    global graph_frame_1, canvas_1, line_1, ax_1
+    graph_frame_1 = tk.Frame(home_window, bg="white")
+    graph_frame_1.grid(row=8, column=15, sticky="e", padx=20, pady=20)
 
-    # Create a matplotlib figure
-    fig = Figure(figsize=(5, 4), dpi=100)
-    ax = fig.add_subplot(111)
-    ax.set_title("Real-Time Data Visualization")
-    ax.set_xlabel("Time (s)")
-    ax.set_ylabel("Value")
-    ax.set_xlim(0, 10)
-    ax.set_ylim(-10, 10)
-    line, = ax.plot([], [], lw=2, label="Real-Time Data")
-    ax.legend()
+    fig_1 = Figure(figsize=(5, 4), dpi=100)
+    ax_1 = fig_1.add_subplot(111)
+    ax_1.set_title("Real-Time Graph 1")
+    ax_1.set_xlabel("Time (s)")
+    ax_1.set_ylabel("Value")
+    ax_1.set_xlim(0, 10)
+    ax_1.set_ylim(-10, 10)
+    line_1, = ax_1.plot([], [], lw=2, label="Graph 1 Data")
+    ax_1.legend()
 
-    # Embed the figure in the tkinter canvas
-    canvas = FigureCanvasTkAgg(fig, master=graph_frame)
-    canvas_widget = canvas.get_tk_widget()
-    canvas_widget.pack()
+    canvas_1 = FigureCanvasTkAgg(fig_1, master=graph_frame_1)
+    canvas_1.get_tk_widget().pack()
 
-    # Start the real-time graph update
-    update_graph()
+    update_graph_1()
 
+    # Embed second real-time graph
+    global graph_frame_2, canvas_2, line_2, ax_2
+    graph_frame_2 = tk.Frame(home_window, bg="white")
+    graph_frame_2.grid(row=8, column=19, sticky="e", padx=20, pady=20)
+
+    fig_2 = Figure(figsize=(5, 4), dpi=100)
+    ax_2 = fig_2.add_subplot(111)
+    ax_2.set_title("Real-Time Graph 2")
+    ax_2.set_xlabel("Time (s)")
+    ax_2.set_ylabel("Value")
+    ax_2.set_xlim(0, 10)
+    ax_2.set_ylim(-10, 10)
+    line_2, = ax_2.plot([], [], lw=2, label="Graph 2 Data")
+    ax_2.legend()
+
+    canvas_2 = FigureCanvasTkAgg(fig_2, master=graph_frame_2)
+    canvas_2.get_tk_widget().pack()
+
+    update_graph_2()
 
     home_window.mainloop()
 
-# Function to display the graph (calls plot.py logic)
-def show_graph():
-    # Use the `plot.show_graph()` function to create the graph in a new window
-    plot.show_graph()
 
 
 def clear_window(window):

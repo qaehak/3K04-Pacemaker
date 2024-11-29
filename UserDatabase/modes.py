@@ -58,7 +58,7 @@ class Modes:
 
         #pressing submit button will confirm parameters
         submit_button = tk.Button(root, text="Submit", command=self.submit_parameters)
-        submit_button.grid(row=10, columnspan=2, pady=20)
+        submit_button.grid(row=5, columnspan=2, pady=10)
 
         self.update_parameters_for_mode()
 
