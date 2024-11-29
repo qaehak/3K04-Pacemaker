@@ -7,6 +7,7 @@ import time
 import database
 from modes import Modes
 from param import param
+import transmit
 import os
 
 db = database.database()
@@ -155,9 +156,9 @@ def open_home_page():
     graph_frame_1 = tk.Frame(home_window, bg="white")
     graph_frame_1.grid(row=8, column=15, sticky="e", padx=20, pady=20)
 
-    fig_1 = Figure(figsize=(5, 4), dpi=100)
+    fig_1 = Figure(figsize=(4, 3), dpi=100)
     ax_1 = fig_1.add_subplot(111)
-    ax_1.set_title("Real-Time Graph 1")
+    ax_1.set_title("Atrial Data")
     ax_1.set_xlabel("Time (s)")
     ax_1.set_ylabel("Value")
     ax_1.set_xlim(0, 10)
@@ -175,9 +176,9 @@ def open_home_page():
     graph_frame_2 = tk.Frame(home_window, bg="white")
     graph_frame_2.grid(row=8, column=19, sticky="e", padx=20, pady=20)
 
-    fig_2 = Figure(figsize=(5, 4), dpi=100)
+    fig_2 = Figure(figsize=(4, 3), dpi=100)
     ax_2 = fig_2.add_subplot(111)
-    ax_2.set_title("Real-Time Graph 2")
+    ax_2.set_title("Ventricle Data")
     ax_2.set_xlabel("Time (s)")
     ax_2.set_ylabel("Value")
     ax_2.set_xlim(0, 10)

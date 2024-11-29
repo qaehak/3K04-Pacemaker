@@ -15,12 +15,13 @@ import tkinter as tk
 import tkinter.messagebox as messagebox
 from tkinter import ttk
 from param import param
+import transmit
+import os
 
 class Modes:
 
     def __init__(self, root, pacemaker_params):
         self.pacemaker_params = pacemaker_params
-
 
         #stores relevant parameters for each mode
         self.mode_params = {
@@ -116,9 +117,6 @@ class Modes:
             elif param == "Recovery Time":
                 combo.set(self.pacemaker_params.get_RecoveryTime())
             
-            
-
-
     def reset_parameters(self):
         #clear previous parameter values from the file
         for param in ["Lower Rate Limit", "Upper Rate Limit", "Maximum Sensor Rate", "Atrial Amplitude", "Atrial Pulse Width", 
@@ -215,7 +213,7 @@ class Modes:
                         self.pacemaker_params.set_ARP(combo_value)
                     
                     elif param == "PVARP":
-                        self.pacemaker_params.set_PVRP(combo_value)
+                        self.pacemaker_params.set_PVARP(combo_value)
                     
                     elif param == "Hysteresis":
                         self.pacemaker_params.set_Hysteresis(combo_value)
@@ -237,7 +235,74 @@ class Modes:
 
                      
                     
-            self.message_label.config(text=f"Parameters for {mode} mode have been updated.") 
+            self.message_label.config(text=f"Parameters for {mode} mode have been updated.")
+            
+            com = transmit.Connection('COM4',self.pacemaker_params) # NOTE THIS LINE MUST GO BELOW DEFINITION FOR PACEMAKER PARAMS
+            com.connect()
+            pacemaker_status = com.get_connection()
+            if (pacemaker_status == 1):
+                #display heart
+                print("Connected")
+                """ connected_image = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__), "connected.png")) 
+                connected_label = tk.Label(root, image=connected_image, bg="#E0DCFB") 
+                connected_label.grid(row=1, column=19, sticky="e") 
+                connected_label.image = connected_image  """
+                print("Connected")
+            else:
+                #display other image
+                 print("Not Connected")
+                 """ disconnected_image = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__), "disconnected.png")) 
+                 disconnected_label = tk.Label(root, image=disconnected_image, bg="#E0DCFB") 
+                 disconnected_label.grid(row=1, column=19, sticky="e") 
+                 disconnected_label.image = disconnected_image  """
+                 print("Not Connected")
+            
+            print(self.pacemaker_params.get_state())
+            #test with this first then add other modes
+            if(self.pacemaker_params.get_state().strip() == 'AOO'):
+                print("AOO")
+                com.transmit('AOO',0,0,self.pacemaker_params.get_LowerRateLimit(), self.pacemaker_params.get_UpperRateLimit(),0,
+                    self.pacemaker_params.get_AtrialAmplitude(), self.pacemaker_params.get_AtrialPulseWidth(),
+                    0,0,0,0,0,0,0,0,0,0)
+            elif(self.pacemaker_params.get_state().strip() == 'VOO'):
+                com.transmit('VOO',0,0, self.pacemaker_params.get_LowerRateLimit(), self.pacemaker_params.get_UpperRateLimit(), 0, 0, 0,
+                self.pacemaker_params.get_VentricularAmplitude(), self.pacemaker_params.get_VentricularPulseWidth(), 0, 0, 0, 0, 0, 0, 0,0)
+                
+            elif(self.pacemaker_params.get_state().strip() == 'AAI'):
+                print("AAI")
+                com.transmit('AAI',self.pacemaker_params.get_ARP(),0,self.pacemaker_params.get_LowerRateLimit(), self.pacemaker_params.get_UpperRateLimit(),0,
+                    self.pacemaker_params.get_AtrialAmplitude(), self.pacemaker_params.get_AtrialPulseWidth(),
+                    0,0,0,4,0,0,0,0,0,0)
+                
+            elif(self.pacemaker_params.get_state().strip() == 'VVI'):
+                print("VVI")
+                com.transmit('VVI',0,self.pacemaker_params.get_VRP(), self.pacemaker_params.get_LowerRateLimit(), self.pacemaker_params.get_UpperRateLimit(), 0, 0, 0,
+                self.pacemaker_params.get_VentricularAmplitude(), self.pacemaker_params.get_VentricularPulseWidth(), 0, 0, 4, 0, 0, 0, 0,0)
+            
+            elif(self.pacemaker_params.get_state().strip() == 'AOOR'):
+                print("AOOR")
+                com.transmit('AOOR',0,0,self.pacemaker_params.get_LowerRateLimit(), self.pacemaker_params.get_UpperRateLimit(),0,
+                    self.pacemaker_params.get_AtrialAmplitude(), self.pacemaker_params.get_AtrialPulseWidth(),
+                    0,0,0,4,0,self.pacemaker_params.get_ReactionTime(), self.pacemaker_params.get_ActivityThreshold(), self.pacemaker_params.get_ResponseFactor(), self.pacemaker_params.get_RecoveryTime(),0)
+            
+            elif(self.pacemaker_params.get_state().strip() == 'VOOR'):
+                print("VOOR")
+                com.transmit('VOOR',0,0,self.pacemaker_params.get_LowerRateLimit(), self.pacemaker_params.get_UpperRateLimit(),0,
+                    0,0, self.pacemaker_params.get_VentricularAmplitude(), self.pacemaker_params.get_VentricularPulseWidth(),0,0,4,self.pacemaker_params.get_ReactionTime(), self.pacemaker_params.get_ActivityThreshold(), self.pacemaker_params.get_ResponseFactor(), self.pacemaker_params.get_RecoveryTime(),0)
+            
+            elif(self.pacemaker_params.get_state().strip() == 'AAIR'):
+                print("AAIR")
+                com.transmit('AAIR',self.pacemaker_params.get_ARP(),0,self.pacemaker_params.get_LowerRateLimit(), self.pacemaker_params.get_UpperRateLimit(),0,
+                    self.pacemaker_params.get_AtrialAmplitude(), self.pacemaker_params.get_AtrialPulseWidth(),
+                    0,0,0,4,0,self.pacemaker_params.get_ReactionTime(), self.pacemaker_params.get_ActivityThreshold(), self.pacemaker_params.get_ResponseFactor(), self.pacemaker_params.get_RecoveryTime(),0)
+            
+            elif(self.pacemaker_params.get_state().strip() == 'VVIR'):
+                print("VVIR")
+                com.transmit('VVIR',0,self.pacemaker_params.get_VRP(),self.pacemaker_params.get_LowerRateLimit(), self.pacemaker_params.get_UpperRateLimit(),0,
+                    0,0, self.pacemaker_params.get_VentricularAmplitude(), self.pacemaker_params.get_VentricularPulseWidth(),0,0,4,self.pacemaker_params.get_ReactionTime(), self.pacemaker_params.get_ActivityThreshold(), self.pacemaker_params.get_ResponseFactor(), self.pacemaker_params.get_RecoveryTime(),0)
+            
+            
+
 
         except KeyError as e:
             self.message_label.config(text=f"Invalid mode selected: {str(e)}", fg="red")
